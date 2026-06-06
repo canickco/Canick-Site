@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Montana ICEC Application Intake — Canick</title>
+<meta name="description" content="Submit the information needed for your Montana Independent Contractor Exemption Certificate (ICEC) application. Canick will prepare and help you complete the official filing.">
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #161b22;
+    --panel-2: #1c2330;
+    --border: #2a3340;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #ff7a1a;
+    --accent-2: #ffa15c;
+    --good: #2ea043;
+    --warn: #d29922;
+    --bad: #f85149;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; }
+  a { color: var(--accent-2); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+  header { margin-bottom: 28px; }
+  header .brand { font-size: 14px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; font-weight: 700; }
+  h1 { font-size: 28px; margin: 6px 0 8px; }
+  header p { color: var(--muted); margin: 0; }
+  .callout { background: var(--panel-2); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 14px 16px; border-radius: var(--radius); margin: 18px 0 26px; font-size: 14px; color: var(--muted); }
+  .callout strong { color: var(--text); }
+
+  section.card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 22px 18px; margin-bottom: 20px; }
+  section.card h2 { margin: 0 0 4px; font-size: 18px; }
+  section.card .sub { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+
+  .row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+  .col-12 { grid-column: span 12; }
+  .col-6 { grid-column: span 6; }
+  .col-4 { grid-column: span 4; }
+  .col-3 { grid-column: span 3; }
+  .col-2 { grid-column: span 2; }
+  @media (max-width: 640px) {
+    .col-6, .col-4, .col-3, .col-2 { grid-column: span 12; }
+  }
+
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  label.req::after { content: " *"; color: var(--accent); }
+  input[type=text], input[type=email], input[type=tel], input[type=number], input[type=date], select, textarea {
+    width: 100%; padding: 10px 12px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { min-height: 80px; resize: vertical; }
+
+  .check-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .check-row:last-child { border-bottom: 0; }
+  .check-row input[type=checkbox] { margin-top: 4px; flex-shrink: 0; transform: scale(1.15); accent-color: var(--accent); }
+  .check-row .label-text { flex: 1; font-size: 14px; }
+  .check-row .pts { font-weight: 700; color: var(--accent); font-size: 13px; min-width: 44px; text-align: right; }
+  .check-row .desc { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .check-row .upload { margin-top: 6px; }
+  .check-row .upload input[type=file] { font-size: 12px; color: var(--muted); }
+
+  .cat-header { display: flex; justify-content: space-between; align-items: baseline; margin: 22px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .cat-header h3 { margin: 0; font-size: 15px; }
+  .cat-header .cat-pts { font-size: 13px; color: var(--muted); }
+
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+  .radio-row input[type=radio] { accent-color: var(--accent); }
+  .radio-row span { font-size: 14px; }
+
+  .occ-item { display: flex; gap: 10px; margin-bottom: 8px; }
+  .occ-item input { flex: 1; }
+  .btn-mini { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+  .btn-mini:hover { color: var(--text); border-color: var(--accent); }
+  .btn-add { margin-top: 6px; }
+
+  .totals { position: sticky; bottom: 12px; background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 6px 24px rgba(0,0,0,0.4); z-index: 10; }
+  .totals .lbl { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .totals .val { font-size: 28px; font-weight: 800; }
+  .totals .val.good { color: var(--good); }
+  .totals .val.warn { color: var(--warn); }
+  .totals .val.bad { color: var(--bad); }
+  .totals .status { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .hidden { display: none !important; }
+
+  .ownership-block { background: var(--panel-2); border: 1px dashed var(--border); border-radius: 8px; padding: 14px 16px; margin-top: 12px; }
+  .ownership-block .owner-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; }
+  .ownership-block input[type=radio] { margin-top: 4px; accent-color: var(--accent); }
+  .ownership-block .owner-text { font-size: 13px; line-height: 1.5; }
+
+  .submit-bar { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+  .agree { font-size: 13px; color: var(--muted); display: flex; gap: 10px; align-items: flex-start; }
+  .agree input[type=checkbox] { margin-top: 3px; accent-color: var(--accent); }
+  button.submit { background: var(--accent); color: #11161d; border: 0; padding: 14px 22px; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+  button.submit:hover { background: var(--accent-2); }
+  button.submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .footer-note { color: var(--muted); font-size: 12px; margin-top: 18px; text-align: center; }
+  .ssn-note { color: var(--warn); font-size: 12px; margin-top: 4px; }
+
+  .alert { padding: 12px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 12px; }
+  .alert.error { background: rgba(248, 81, 73, 0.1); border: 1px solid var(--bad); color: var(--bad); }
+  .alert.success { background: rgba(46, 160, 67, 0.1); border: 1px solid var(--good); color: var(--good); }
+
+  .success-panel { background: var(--panel); border: 1px solid var(--good); border-radius: var(--radius); padding: 36px 28px; text-align: center; }
+  .success-panel h2 { color: var(--good); margin: 0 0 10px; font-size: 22px; }
+  .success-panel p { color: var(--text); margin: 6px 0; }
+  .success-panel .ref { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(17,22,29,0.3); border-top-color: #11161d; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">Canick</div>
+  <h1>Montana ICEC Application Intake</h1>
+  <p>Submit your information below. We'll prepare your Independent Contractor Exemption Certificate (ICEC) application for filing with the Montana DLI.</p>
+</header>
+
+<div class="callout">
+  <strong>How this works:</strong> Fill out every required field. Check off the business documents you can provide and upload copies where possible. You need <strong>15 points per trade/occupation</strong> to qualify. Submitting this form does <em>not</em> file your application — Canick will review, prepare the official paperwork, and walk you through signing and the $125 state fee.
+</div>
+
+<div id="successPanel" class="success-panel hidden">
+  <h2>Submission received</h2>
+  <p>Thanks — we've got your information.</p>
+  <p>Jim will review it shortly and reach out to finalize and sign your official ICEC application.</p>
+  <p class="ref">Reference: <span id="appRef"></span></p>
+</div>
+
+<form id="icecForm" enctype="multipart/form-data">
+  <div id="formAlert" class="alert error hidden"></div>
+
+  <!-- APPLICANT -->
+  <section class="card">
+    <h2>1. Applicant Information</h2>
+    <div class="sub">Personal details. Must match your government ID.</div>
+    <div class="row">
+      <div class="col-4">
+        <label class="req" for="first_name">First Name</label>
+        <input type="text" id="first_name" name="first_name" required>
+      </div>
+      <div class="col-2">
+        <label for="middle_initial">MI</label>
+        <input type="text" id="middle_initial" name="middle_initial" maxlength="1">
+      </div>
+      <div class="col-6">
+        <label class="req" for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="last_name" required>
+      </div>
+      <div class="col-6">
+        <label class="req" for="ssn">SSN</label>
+        <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX" required>
+        <div class="ssn-note">Transmitted securely over HTTPS. Required by the State of Montana on the application.</div>
+      </div>
+      <div class="col-6">
+        <label class="req" for="dob_confirm">I confirm I am 18 or older</label>
+        <select id="dob_confirm" name="dob_confirm" required>
+          <option value="">Select...</option>
+          <option value="Yes">Yes, I am 18 or older</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESS -->
+  <section class="card">
+    <h2>2. Business Information</h2>
+    <div class="sub">If you do not use a business name, enter your personal name.</div>
+    <div class="row">
+      <div class="col-12">
+        <label class="req" for="business_name">Business Name(s)</label>
+        <input type="text" id="business_name" name="business_name" required>
+      </div>
+
+      <div class="col-12"><label class="req">Mailing Address</label></div>
+      <div class="col-12">
+        <input type="text" name="mailing_street" placeholder="Street address" required>
+      </div>
+      <div class="col-6"><input type="text" name="mailing_city" placeholder="City" required></div>
+      <div class="col-2"><input type="text" name="mailing_state" placeholder="State" value="MT" required></div>
+      <div class="col-4"><input type="text" name="mailing_zip" placeholder="ZIP" required></div>
+
+      <div class="col-12"><label class="req">Business Physical Address</label></div>
+      <div class="col-12">
+        <input type="text" name="physical_street" placeholder="Street address" required>
+      </div>
+      <div class="col-6"><input type="text" name="physical_city" placeholder="City" required></div>
+      <div class="col-2"><input type="text" name="physical_state" placeholder="State" value="MT" required></div>
+      <div class="col-4"><input type="text" name="physical_zip" placeholder="ZIP" required></div>
+
+      <div class="col-6">
+        <label class="req" for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone" required>
+      </div>
+      <div class="col-6">
+        <label class="req" for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+    </div>
+  </section>
+
+  <!-- OCCUPATIONS -->
+  <section class="card">
+    <h2>3. Trade(s), Occupation(s), or Profession(s)</h2>
+    <div class="sub">List each occupation you're applying for. <strong>You need 15 points of documentation per occupation</strong> (the same document can count for multiple occupations).</div>
+    <div id="occupations">
+      <div class="occ-item">
+        <input type="text" name="occupation_1" placeholder="e.g., General contractor, Welder, Truck driver" required>
+      </div>
+    </div>
+    <button type="button" class="btn-mini btn-add" id="addOccupation">+ Add another occupation</button>
+  </section>
+
+  <!-- BUSINESS STRUCTURE -->
+  <section class="card">
+    <h2>4. Business Structure</h2>
+    <div class="sub">Must match your registration with the Montana Secretary of State.</div>
+    <div class="radio-group">
+      <label class="radio-row"><input type="radio" name="business_structure" value="Sole Proprietor" required><span>Sole Proprietor</span></label>
+      <label class="radio-row"><input type="radio" name="business_structure" value="Partnership or LLP"><span>Partnership or LLP</span></label>
+      <label class="radio-row"><input type="radio" name="business_structure" value="Member-Managed LLC"><span>Member-Managed LLC</span></label>
+      <label class="radio-row"><input type="radio" name="business_structure" value="Manager-Managed LLC (construction)"><span>Manager-Managed LLC (construction) — may need Construction Contractor Registration</span></label>
+      <label class="radio-row"><input type="radio" name="business_structure" value="Manager-Managed LLC (non-construction)"><span>Manager-Managed LLC (non-construction)</span></label>
+      <label class="radio-row"><input type="radio" name="business_structure" value="Corporation (construction)"><span>Corporation (construction) — may need Construction Contractor Registration</span></label>
+      <label class="radio-row"><input type="radio" name="business_structure" value="Corporation (non-construction)"><span>Corporation (non-construction)</span></label>
+    </div>
+
+    <div id="officerTitle" class="hidden" style="margin-top:14px;">
+      <label class="req">Corporate Officer Title</label>
+      <div class="radio-group">
+        <label class="radio-row"><input type="radio" name="officer_title" value="President"><span>President</span></label>
+        <label class="radio-row"><input type="radio" name="officer_title" value="Vice President"><span>Vice President</span></label>
+        <label class="radio-row"><input type="radio" name="officer_title" value="Secretary"><span>Secretary</span></label>
+        <label class="radio-row"><input type="radio" name="officer_title" value="Treasurer"><span>Treasurer</span></label>
+      </div>
+    </div>
+
+    <div id="ownershipBlock" class="ownership-block hidden">
+      <strong style="font-size:13px;">Ownership Declaration (required for Manager-Managed LLC non-construction and Corporations):</strong>
+      <p style="font-size:12px; color: var(--muted); margin: 6px 0 4px;">Select the statement that applies to you. Whichever one you select, you will be initialing on the official form.</p>
+      <label class="owner-row">
+        <input type="radio" name="ownership_declaration" value="own_10_or_more">
+        <span class="owner-text">I own <strong>10% or more</strong> of the shares of stock in the corporation, or 10% or more of the LLC.</span>
+      </label>
+      <label class="owner-row">
+        <input type="radio" name="ownership_declaration" value="aggregated_10_or_more">
+        <span class="owner-text">I own <strong>less than 10%</strong>, but when aggregated with shares owned by qualifying relatives (third category), the total is 10% or more.</span>
+      </label>
+      <label class="owner-row">
+        <input type="radio" name="ownership_declaration" value="qualifying_relative">
+        <span class="owner-text">I am the <strong>spouse, child, adopted child, stepchild, mother, father, son-in-law, daughter-in-law, nephew, niece, brother, or sister</strong> of a corporate officer who meets one of the requirements above.</span>
+      </label>
+    </div>
+  </section>
+
+  <!-- POINT SYSTEM -->
+  <section class="card">
+    <h2>5. Business Documentation (Point System)</h2>
+    <div class="sub">Check each item you can provide. Upload a copy if you have it digitally — otherwise check the box and bring it when we meet. <strong>Goal: 15 points per occupation.</strong></div>
+
+    <div class="cat-header">
+      <h3>6+ Point Category</h3>
+      <span class="cat-pts">Highest-value documents</span>
+    </div>
+    <div id="cat6"></div>
+
+    <div class="cat-header">
+      <h3>3 Point Category</h3>
+      <span class="cat-pts">Mid-value documents</span>
+    </div>
+    <div id="cat3"></div>
+
+    <div class="cat-header">
+      <h3>1.5 Point Category</h3>
+      <span class="cat-pts">Supporting documents</span>
+    </div>
+    <div id="cat1_5"></div>
+  </section>
+
+  <div class="totals" id="totalsBar">
+    <div>
+      <div class="lbl">Your Total</div>
+      <div class="status" id="totalsStatus">Need 15 points per occupation</div>
+    </div>
+    <div class="val bad" id="totalsValue">0</div>
+  </div>
+
+  <!-- NOTES -->
+  <section class="card">
+    <h2>6. Additional Notes</h2>
+    <div class="sub">Anything you want us to know — questions, special situations, documents you're not sure about.</div>
+    <textarea name="notes" placeholder="Optional notes for Canick..."></textarea>
+  </section>
+
+  <!-- AGREE & SUBMIT -->
+  <section class="card">
+    <h2>7. Review & Submit</h2>
+    <div class="sub">By submitting, you confirm the information above is accurate to the best of your knowledge. Canick will follow up to finalize and sign the official application.</div>
+    <div class="submit-bar">
+      <label class="agree">
+        <input type="checkbox" name="confirm_accurate" required>
+        <span>I declare the information I've provided is true and accurate to the best of my knowledge. I understand Canick will use this information to prepare my Montana ICEC application, but I am still responsible for signing the official application and paying the $125 state fee.</span>
+      </label>
+      <label class="agree">
+        <input type="checkbox" name="confirm_waiver" required>
+        <span>I understand that if my ICEC is approved, I will be <strong>waiving all rights and benefits under the Montana Workers' Compensation Act</strong> for work performed under the certificate.</span>
+      </label>
+      <button type="submit" class="submit" id="submitBtn">Submit to Canick</button>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    Questions? Email <a href="mailto:jim@canick.co">jim@canick.co</a> or call (406) 606-6088.
+  </div>
+</form>
+
+</div>
+
+<script>
+// Supabase endpoint config
+const SUPABASE_URL = 'https://fjikfftetmqtlymwgwwz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqaWtmZnRldG1xdGx5bXdnd3d6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NTU0NjAsImV4cCI6MjA5MjAzMTQ2MH0.genBzshp16TOWCIdlSsrUYQKkOnIEx4pOQv3PkVQrJY';
+const SUBMIT_URL = `${SUPABASE_URL}/functions/v1/submit_icec`;
+
+// Document catalog from the official Montana DLI Business Documentation List
+const DOCS = {
+  cat6: [
+    { id: 'wc_ui_revenue', pts: 10, label: "Workers' Compensation, Unemployment Insurance, AND Revenue accounts for employees (all three)", desc: "All three required to claim the 10-point value." },
+    { id: 'mou', pts: 6, label: "Memo of Understanding / contract evidencing independent contractor status, or Emergency Equipment Rental Agreement", desc: "Must include: payment per project, start/end dates, liability for failure, materials/supplies responsibility, defined body of work, all parties' signatures." },
+    { id: 'liability_ins', pts: 6, label: "General commercial liability insurance or insurance bond certificate", desc: "Must contain agent contact info and current effective dates." },
+    { id: 'tools_list', pts: 6, label: "List of tools and equipment owned by applicant (with approximate values)", desc: "Must be signed and dated by you." },
+    { id: 'tax_schedules', pts: 6, label: "Business tax forms / records — IRS Schedule C, E, F, or K", desc: "Must be within the past three years." },
+    { id: 'form_1099s', pts: 6, label: "Form 1099s — two different hiring agents with compensation amounts differing from Schedule C/E/F/K", desc: "Must be within the past three years." },
+    { id: 'trucking_lease', pts: 6, label: "Trucking company lease agreement", desc: "" },
+    { id: 'indian_pref', pts: 6, label: "Certification for Indian Preference by a federally recognized tribe", desc: "" }
+  ],
+  cat3: [
+    { id: 'partnership_agmt', pts: 3, label: "Partnership agreement", desc: "Required if Partnership business structure. Must include intent, contributions, control, profit/loss sharing, working partner role, signatures." },
+    { id: 'pro_license', pts: 3, label: "Professional license relevant to your trade/occupation", desc: "" },
+    { id: 'edu_cert', pts: 3, label: "Educational certification relevant to your unlicensed trade/occupation", desc: "" },
+    { id: 'city_county_license', pts: 3, label: "City or county business license or permit", desc: "" },
+    { id: 'sos_registration', pts: 3, label: "Registration of business name and structure with Montana Secretary of State", desc: "" },
+    { id: 'articles', pts: 3, label: "Articles of incorporation, organization, or annual report", desc: "LLCs and Corporations only — must reflect officers/managers/members." },
+    { id: 'business_location', pts: 3, label: "Business location documentation", desc: "Lease, rental agreement, property tax statement, or IRS 8829." },
+    { id: 'business_bank', pts: 3, label: "Bank account for your business (cannot be personal)", desc: "" },
+    { id: 'pro_membership', pts: 3, label: "Professional membership or affiliation", desc: "" },
+    { id: 'advertising_print', pts: 3, label: "Advertising (internet website, newspaper, phone book, or magazine)", desc: "" }
+  ],
+  cat1_5: [
+    { id: 'cr_reg', pts: 1.5, label: "Construction Contractor Registration", desc: "" },
+    { id: 'printed_forms', pts: 1.5, label: "Pre-printed forms, business card, or brochure", desc: "" },
+    { id: 'invoices', pts: 1.5, label: "Invoices billed to your business name", desc: "" },
+    { id: 'advertising_local', pts: 1.5, label: "Advertising — sign on vehicle, yard, bulletin board, flyer, or social media", desc: "" },
+    { id: 'branded_apparel', pts: 1.5, label: "Order receipt for printed hats, shirts, apparel, pens or pencils for your business", desc: "" },
+    { id: 'fein', pts: 1.5, label: "Documented proof of federal employer identification number (FEIN/TEIN/TIN)", desc: "" },
+    { id: 'business_credit', pts: 1.5, label: "Credit card or purchasing account for your business (cannot be personal)", desc: "" },
+    { id: 'business_utility', pts: 1.5, label: "Telephone or utility bill for business (cannot be personal)", desc: "" },
+    { id: 'business_vehicle', pts: 1.5, label: "Vehicle registration for your business (cannot be personal)", desc: "" },
+    { id: 'ifta', pts: 1.5, label: "International Fuel Tax Account number (IFTA)", desc: "" },
+    { id: 'usdot', pts: 1.5, label: "USDOT number", desc: "" },
+    { id: 'dnb', pts: 1.5, label: "Dunn and Bradstreet number", desc: "" }
+  ]
+};
+
+function renderDocs(catKey, containerId) {
+  const container = document.getElementById(containerId);
+  DOCS[catKey].forEach(doc => {
+    const row = document.createElement('div');
+    row.className = 'check-row';
+    row.innerHTML = `
+      <input type="checkbox" id="doc_${doc.id}" name="doc_${doc.id}" data-pts="${doc.pts}" class="doc-check">
+      <div class="label-text">
+        <label for="doc_${doc.id}" style="display:inline; color: var(--text); font-size: 14px; cursor: pointer;">${doc.label}</label>
+        ${doc.desc ? `<div class="desc">${doc.desc}</div>` : ''}
+        <div class="upload"><input type="file" name="file_${doc.id}" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple></div>
+      </div>
+      <div class="pts">${doc.pts} pt${doc.pts !== 1 ? 's' : ''}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+renderDocs('cat6', 'cat6');
+renderDocs('cat3', 'cat3');
+renderDocs('cat1_5', 'cat1_5');
+
+function recalcPoints() {
+  let total = 0;
+  document.querySelectorAll('.doc-check').forEach(cb => {
+    if (cb.checked) total += parseFloat(cb.dataset.pts);
+  });
+  const valEl = document.getElementById('totalsValue');
+  const statusEl = document.getElementById('totalsStatus');
+  const occCount = document.querySelectorAll('#occupations input[type=text]').length;
+  const needed = 15;
+
+  valEl.textContent = total % 1 === 0 ? total : total.toFixed(1);
+  valEl.classList.remove('good','warn','bad');
+
+  if (total >= needed) {
+    valEl.classList.add('good');
+    statusEl.textContent = `✓ You have enough for ${occCount} occupation${occCount > 1 ? 's' : ''} (15 pts each, same docs count for all)`;
+  } else if (total >= needed * 0.6) {
+    valEl.classList.add('warn');
+    statusEl.textContent = `${(needed - total).toFixed(1)} points short of the 15-point minimum`;
+  } else {
+    valEl.classList.add('bad');
+    statusEl.textContent = `Need ${(needed - total).toFixed(1)} more points (15 minimum per occupation)`;
+  }
+}
+document.addEventListener('change', e => {
+  if (e.target.classList.contains('doc-check')) recalcPoints();
+});
+
+let occCount = 1;
+document.getElementById('addOccupation').addEventListener('click', () => {
+  occCount++;
+  const wrap = document.getElementById('occupations');
+  const div = document.createElement('div');
+  div.className = 'occ-item';
+  div.innerHTML = `
+    <input type="text" name="occupation_${occCount}" placeholder="Additional occupation" required>
+    <button type="button" class="btn-mini occ-remove">Remove</button>
+  `;
+  wrap.appendChild(div);
+  div.querySelector('.occ-remove').addEventListener('click', () => {
+    div.remove();
+    recalcPoints();
+  });
+  recalcPoints();
+});
+
+const ownershipStructures = [
+  "Manager-Managed LLC (non-construction)",
+  "Corporation (construction)",
+  "Corporation (non-construction)"
+];
+const officerStructures = [
+  "Corporation (construction)",
+  "Corporation (non-construction)"
+];
+document.querySelectorAll('input[name="business_structure"]').forEach(radio => {
+  radio.addEventListener('change', e => {
+    const v = e.target.value;
+    document.getElementById('ownershipBlock').classList.toggle('hidden', !ownershipStructures.includes(v));
+    document.getElementById('officerTitle').classList.toggle('hidden', !officerStructures.includes(v));
+  });
+});
+
+document.getElementById('ssn').addEventListener('blur', e => {
+  let v = e.target.value.replace(/\D/g,'');
+  if (v.length === 9) {
+    e.target.value = `${v.slice(0,3)}-${v.slice(3,5)}-${v.slice(5)}`;
+  }
+});
+
+recalcPoints();
+
+// Form submission → Supabase edge function
+const form = document.getElementById('icecForm');
+const submitBtn = document.getElementById('submitBtn');
+const alertBox = document.getElementById('formAlert');
+const successPanel = document.getElementById('successPanel');
+
+function showError(msg) {
+  alertBox.textContent = msg;
+  alertBox.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  alertBox.classList.add('hidden');
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner"></span>Submitting...';
+
+  try {
+    const formData = new FormData(form);
+    const res = await fetch(SUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+      body: formData
+    });
+
+    const result = await res.json().catch(() => ({ ok: false, error: 'Invalid response from server' }));
+
+    if (!res.ok || !result.ok) {
+      const detail = Array.isArray(result.details) ? ` (${result.details.join(', ')})` : '';
+      showError(`Submission failed: ${result.error || 'Unknown error'}${detail}`);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit to Canick';
+      return;
+    }
+
+    form.classList.add('hidden');
+    document.getElementById('totalsBar').classList.add('hidden');
+    document.getElementById('appRef').textContent = result.application_id || '';
+    successPanel.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    showError(`Network error: ${err.message}`);
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Submit to Canick';
+  }
+});
+</script>
+</body>
+</html>

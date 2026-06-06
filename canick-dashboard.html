@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canick — AI Jim Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --navy: #0F1C2E;
+  --navy-mid: #1B2A4A;
+  --navy-light: #243560;
+  --copper: #A0714F;
+  --copper-light: #C49A6C;
+  --copper-bright: #E8B87A;
+  --cream: #FAF7F2;
+  --mid: #8A9BB0;
+  --border: rgba(160,113,79,0.2);
+  --green: #2ecc71;
+  --red: #e74c3c;
+  --yellow: #f39c12;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--navy);color:var(--cream);min-height:100vh;overflow-x:hidden;}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.5;}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:500;}
+.login-box{background:var(--navy-mid);border:1px solid var(--border);border-top:3px solid var(--copper);border-radius:6px;padding:48px;width:380px;text-align:center;}
+.login-logo{font-size:32px;font-weight:700;color:var(--copper-bright);letter-spacing:4px;margin-bottom:6px;}
+.login-sub{font-size:12px;color:var(--mid);margin-bottom:32px;letter-spacing:1px;}
+.login-label{font-size:11px;color:var(--copper);text-transform:uppercase;letter-spacing:1px;text-align:left;display:block;margin-bottom:6px;}
+.login-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:4px;color:var(--cream);font-size:14px;outline:none;margin-bottom:20px;transition:border-color 0.2s;}
+.login-input:focus{border-color:var(--copper);}
+.login-btn{width:100%;padding:14px;background:var(--copper);color:var(--navy);border:none;border-radius:4px;font-size:14px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.login-btn:hover{background:var(--copper-bright);}
+.login-error{color:var(--red);font-size:12px;margin-top:12px;display:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(15,28,46,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:100;}
+.nav-left{display:flex;align-items:center;gap:16px;}
+.nav-logo{font-size:22px;font-weight:700;color:var(--copper-bright);letter-spacing:3px;}
+.nav-badge{background:rgba(160,113,79,0.15);border:1px solid var(--border);border-radius:3px;padding:3px 10px;font-size:10px;color:var(--copper);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-time{font-size:12px;color:var(--mid);font-family:monospace;}
+.live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.refresh-btn{padding:6px 14px;background:transparent;border:1px solid var(--border);border-radius:3px;color:var(--copper-light);font-size:12px;cursor:pointer;transition:all 0.2s;}
+.refresh-btn:hover{border-color:var(--copper);color:var(--copper-bright);}
+.logout-btn{padding:6px 14px;background:transparent;border:1px solid var(--border);border-radius:3px;color:var(--mid);font-size:12px;cursor:pointer;transition:all 0.2s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* MAIN */
+main{padding:88px 32px 32px;max-width:1400px;margin:0 auto;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:6px;padding:20px 20px 16px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.stat-card:hover{border-color:var(--copper);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--copper);opacity:0.6;}
+.stat-label{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.stat-value{font-size:36px;font-weight:700;color:var(--copper-bright);line-height:1;margin-bottom:4px;font-family:Georgia,serif;}
+.stat-sub{font-size:11px;color:var(--mid);}
+.stat-green{color:var(--green)!important;}
+.stat-copper{color:var(--copper-bright)!important;}
+
+/* GRID LAYOUTS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.grid-65{display:grid;grid-template-columns:1.8fr 1fr;gap:16px;margin-bottom:16px;}
+
+/* CARDS */
+.card{background:var(--navy-mid);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--copper);font-weight:600;}
+.card-count{font-size:11px;color:var(--mid);}
+.card-body{padding:20px;}
+
+/* CALL TABLE */
+.call-table{width:100%;border-collapse:collapse;}
+.call-table th{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mid);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.call-table td{padding:10px 12px;border-bottom:1px solid rgba(160,113,79,0.08);font-size:13px;vertical-align:top;}
+.call-table tr:last-child td{border-bottom:none;}
+.call-table tr:hover td{background:rgba(160,113,79,0.04);}
+.call-row-expand{cursor:pointer;}
+.badge{display:inline-block;padding:3px 8px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;}
+.badge-prospect{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
+.badge-client{background:rgba(232,184,122,0.15);color:var(--copper-bright);border:1px solid rgba(232,184,122,0.3);}
+.badge-inquiry{background:rgba(138,155,176,0.15);color:var(--mid);border:1px solid rgba(138,155,176,0.3);}
+.badge-other{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.3);}
+.badge-booked{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
+.badge-pending{background:rgba(243,156,18,0.15);color:var(--yellow);border:1px solid rgba(243,156,18,0.3);}
+
+/* EXPAND ROW */
+.expand-content{display:none;background:rgba(15,28,46,0.6);padding:16px 12px;border-top:1px solid var(--border);}
+.expand-content.open{display:block;}
+.expand-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.expand-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--copper);margin-bottom:8px;}
+.expand-text{font-size:12px;color:var(--mid);line-height:1.6;}
+.transcript-box{background:var(--navy);border:1px solid var(--border);border-radius:4px;padding:12px;font-size:12px;color:var(--mid);line-height:1.6;max-height:140px;overflow-y:auto;}
+
+/* BOOKING TABLE */
+.booking-card{background:var(--navy);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:8px;}
+.booking-card:last-child{margin-bottom:0;}
+.booking-name{font-size:14px;font-weight:600;color:var(--cream);margin-bottom:4px;}
+.booking-meta{font-size:12px;color:var(--mid);}
+.booking-time{font-size:13px;color:var(--copper-bright);margin-top:6px;font-family:monospace;}
+.booking-actions{display:flex;gap:8px;margin-top:10px;}
+.btn-sm{padding:5px 12px;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.5px;}
+.btn-copper{background:var(--copper);color:var(--navy);}
+.btn-copper:hover{background:var(--copper-bright);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--mid);}
+.btn-outline:hover{border-color:var(--copper);color:var(--copper-light);}
+.btn-red{background:transparent;border:1px solid rgba(231,76,60,0.3);color:var(--red);}
+.btn-red:hover{background:rgba(231,76,60,0.1);}
+
+/* CHART CONTAINERS */
+.chart-wrap{position:relative;height:200px;}
+.chart-wrap-sm{position:relative;height:160px;}
+
+/* MARKETING INSIGHTS */
+.insight-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(160,113,79,0.08);}
+.insight-row:last-child{border-bottom:none;}
+.insight-label{font-size:12px;color:var(--cream);flex:1;}
+.insight-bar-wrap{flex:2;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.insight-bar{height:100%;background:var(--copper);border-radius:3px;transition:width 0.8s ease;}
+.insight-count{font-size:12px;color:var(--copper-bright);width:30px;text-align:right;font-family:monospace;}
+
+/* AFTER HOURS */
+.after-hours-card{background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.2);border-radius:4px;padding:14px;margin-bottom:8px;}
+.after-hours-name{font-size:13px;font-weight:600;color:var(--cream);}
+.after-hours-meta{font-size:12px;color:var(--mid);margin-top:4px;}
+.after-hours-time{font-size:12px;color:var(--yellow);margin-top:4px;}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:var(--mid);}
+.empty-icon{font-size:32px;margin-bottom:12px;opacity:0.4;}
+.empty-text{font-size:13px;}
+
+/* SEARCH/FILTER BAR */
+.filter-bar{display:flex;gap:10px;padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(15,28,46,0.4);}
+.filter-input{flex:1;padding:7px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;color:var(--cream);font-size:12px;outline:none;}
+.filter-input:focus{border-color:var(--copper);}
+.filter-select{padding:7px 12px;background:var(--navy-mid);border:1px solid var(--border);border-radius:3px;color:var(--cream);font-size:12px;outline:none;cursor:pointer;}
+
+/* LOADING */
+.loading{text-align:center;padding:32px;color:var(--mid);font-size:13px;}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--copper);border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.section-title{font-size:13px;font-weight:600;color:var(--cream);letter-spacing:0.5px;}
+.section-rule{flex:1;height:1px;background:var(--border);}
+
+/* NOTES */
+.notes-area{width:100%;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;color:var(--cream);font-size:12px;resize:vertical;min-height:60px;font-family:inherit;outline:none;}
+.notes-area:focus{border-color:var(--copper);}
+.save-note-btn{margin-top:6px;padding:6px 14px;background:var(--copper);color:var(--navy);border:none;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;}
+.save-note-btn:hover{background:var(--copper-bright);}
+
+/* TABS */
+.tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--border);background:rgba(15,28,46,0.3);}
+.tab{padding:10px 16px;font-size:12px;color:var(--mid);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.5px;}
+.tab.active{color:var(--copper-bright);border-bottom-color:var(--copper);}
+.tab:hover{color:var(--copper-light);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* PRIORITY FLAG */
+.priority-flag{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;}
+.priority-dot{width:6px;height:6px;background:var(--green);border-radius:50%;}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .stats-row{grid-template-columns:repeat(3,1fr);}
+  .grid-2,.grid-3,.grid-65{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  main{padding:80px 16px 24px;}
+  nav{padding:0 16px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">CANICK</div>
+    <div class="login-sub">AI Jim · Operations Dashboard</div>
+    <label class="login-label">Access Code</label>
+    <input type="password" class="login-input" id="loginInput" placeholder="Enter access code" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Access Dashboard</button>
+    <div class="login-error" id="loginError">Incorrect access code</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">CANICK</div>
+    <div class="nav-badge">AI Jim · Live</div>
+  </div>
+  <div class="nav-right">
+    <div class="live-dot"></div>
+    <div class="nav-time" id="clockDisplay"></div>
+    <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<main id="mainContent" style="display:none;">
+
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card">
+      <div class="stat-label">Total Calls</div>
+      <div class="stat-value" id="statTotal">—</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Prospects</div>
+      <div class="stat-value stat-green" id="statProspects">—</div>
+      <div class="stat-sub">Identified leads</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Appointments</div>
+      <div class="stat-value stat-copper" id="statBooked">—</div>
+      <div class="stat-sub">Consultations booked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Conversion</div>
+      <div class="stat-value" id="statConversion">—</div>
+      <div class="stat-sub">Calls → bookings</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Duration</div>
+      <div class="stat-value" id="statDuration">—</div>
+      <div class="stat-sub">Seconds per call</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Call Volume — Last 7 Days</div>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap"><canvas id="volumeChart"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Call Types</div>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap"><canvas id="typeChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALLS + BOOKINGS -->
+  <div class="grid-65">
+
+    <!-- CALLS TABLE -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Recent Calls</div>
+        <div class="card-count" id="callCount">Loading...</div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('all')">All</div>
+        <div class="tab" onclick="switchTab('prospect')">Prospects</div>
+        <div class="tab" onclick="switchTab('booked')">Booked</div>
+        <div class="tab" onclick="switchTab('afterhours')">After Hours</div>
+      </div>
+      <div class="filter-bar">
+        <input class="filter-input" id="searchInput" placeholder="Search by name, number, business..." oninput="filterCalls()">
+        <select class="filter-select" id="typeFilter" onchange="filterCalls()">
+          <option value="">All Types</option>
+          <option value="prospect">Prospect</option>
+          <option value="client">Client</option>
+          <option value="inquiry">Inquiry</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div id="callsContainer"><div class="loading"><span class="spinner"></span>Loading calls...</div></div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- UPCOMING BOOKINGS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Upcoming Consultations</div>
+          <div class="card-count" id="bookingCount">—</div>
+        </div>
+        <div class="card-body" id="bookingsContainer">
+          <div class="loading"><span class="spinner"></span>Loading...</div>
+        </div>
+      </div>
+
+      <!-- MARKETING INSIGHTS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">How They Found You</div>
+        </div>
+        <div class="card-body" id="heardFromContainer">
+          <div class="loading"><span class="spinner"></span>Loading...</div>
+        </div>
+      </div>
+
+      <!-- AFTER HOURS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">After-Hours Requests</div>
+          <div class="card-count" id="afterHoursCount">—</div>
+        </div>
+        <div class="card-body" id="afterHoursContainer">
+          <div class="loading"><span class="spinner"></span>Loading...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INSIGHTS ROW -->
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Pain Points</div></div>
+      <div class="card-body" id="painPointsContainer"><div class="loading"><span class="spinner"></span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Business Types</div></div>
+      <div class="card-body" id="bizTypeContainer"><div class="loading"><span class="spinner"></span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Decision Timeline</div></div>
+      <div class="card-body" id="timelineContainer"><div class="loading"><span class="spinner"></span></div></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const SUPABASE_URL = 'https://fjikfftetmqtlymwgwwz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqaWtmZnRldG1xdGx5bXdnd3d6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NTU0NjAsImV4cCI6MjA5MjAzMTQ2MH0.genBzshp16TOWCIdlSsrUYQKkOnIEx4pOQv3PkVQrJY';
+const PASSWORD = 'canick2026';
+
+let allCalls = [];
+let allBookings = [];
+let currentTab = 'all';
+let volumeChart, typeChart;
+
+// CLOCK
+function updateClock(){
+  const now = new Date();
+  document.getElementById('clockDisplay').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'America/Denver'}) + ' MT';
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// LOGIN
+function doLogin(){
+  const val = document.getElementById('loginInput').value;
+  if(val === PASSWORD){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    loadAll();
+    setInterval(loadAll, 60000);
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+function logout(){
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('loginInput').value = '';
+}
+
+// FETCH
+async function sbFetch(table, params=''){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json'}
+  });
+  return r.json();
+}
+async function sbPatch(table, id, data){
+  await fetch(`${SUPABASE_URL}/rest/v1/${table}?call_id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
+    body: JSON.stringify(data)
+  });
+}
+
+async function loadAll(){
+  try {
+    const [calls, bookings] = await Promise.all([
+      sbFetch('call_logs', 'order=created_at.desc&limit=200'),
+      sbFetch('bookings', 'order=event_date.asc,event_time.asc')
+    ]);
+    allCalls = Array.isArray(calls) ? calls : [];
+    allBookings = Array.isArray(bookings) ? bookings : [];
+    renderStats();
+    renderCalls();
+    renderBookings();
+    renderCharts();
+    renderInsights();
+    renderAfterHours();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+// STATS
+function renderStats(){
+  const total = allCalls.length;
+  const prospects = allCalls.filter(c => c.call_type === 'prospect').length;
+  const booked = allCalls.filter(c => c.appointment_booked).length;
+  const conversion = total > 0 ? Math.round((booked/total)*100) : 0;
+  const avgDur = total > 0 ? Math.round(allCalls.reduce((s,c) => s + (c.duration_seconds||0), 0) / total) : 0;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statProspects').textContent = prospects;
+  document.getElementById('statBooked').textContent = booked;
+  document.getElementById('statConversion').textContent = conversion + '%';
+  document.getElementById('statDuration').textContent = avgDur + 's';
+}
+
+// CALLS
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  filterCalls();
+}
+
+function filterCalls(){
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const typeF = document.getElementById('typeFilter').value;
+  let filtered = [...allCalls];
+  if(currentTab === 'prospect') filtered = filtered.filter(c => c.call_type === 'prospect');
+  if(currentTab === 'booked') filtered = filtered.filter(c => c.appointment_booked);
+  if(currentTab === 'afterhours') filtered = filtered.filter(c => c.call_type === 'after_hours');
+  if(typeF) filtered = filtered.filter(c => c.call_type === typeF);
+  if(search) filtered = filtered.filter(c =>
+    (c.caller_name||'').toLowerCase().includes(search) ||
+    (c.from_number||'').includes(search) ||
+    (c.business_type||'').toLowerCase().includes(search) ||
+    (c.call_summary||'').toLowerCase().includes(search)
+  );
+  renderCallTable(filtered);
+}
+
+function renderCalls(){
+  document.getElementById('callCount').textContent = allCalls.length + ' total';
+  filterCalls();
+}
+
+function renderCallTable(calls){
+  const el = document.getElementById('callsContainer');
+  if(!calls.length){
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📞</div><div class="empty-text">No calls yet</div></div>';
+    return;
+  }
+  let html = '<table class="call-table"><thead><tr><th>Caller</th><th>Type</th><th>Duration</th><th>Booked</th><th>Date</th><th></th></tr></thead><tbody>';
+  calls.forEach((c,i) => {
+    const dt = c.created_at ? new Date(c.created_at) : null;
+    const dateStr = dt ? dt.toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+    const timeStr = dt ? dt.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'America/Denver'}) : '';
+    const dur = c.duration_seconds ? (c.duration_seconds < 60 ? c.duration_seconds+'s' : Math.floor(c.duration_seconds/60)+'m '+(c.duration_seconds%60)+'s') : '—';
+    const typeClass = c.call_type === 'prospect' ? 'badge-prospect' : c.call_type === 'client' ? 'badge-client' : c.call_type === 'inquiry' ? 'badge-inquiry' : 'badge-other';
+    html += `<tr class="call-row-expand" onclick="toggleExpand('expand_${i}')">
+      <td>
+        <div style="font-weight:600;color:var(--cream);font-size:13px;">${c.caller_name || 'Unknown'}</div>
+        <div style="font-size:11px;color:var(--mid);font-family:monospace;">${c.from_number || '—'}</div>
+        ${c.business_type ? `<div style="font-size:11px;color:var(--mid);">${c.business_type}</div>` : ''}
+      </td>
+      <td><span class="badge ${typeClass}">${c.call_type || 'other'}</span></td>
+      <td style="font-family:monospace;color:var(--mid);font-size:12px;">${dur}</td>
+      <td>${c.appointment_booked ? '<span class="badge badge-booked">✓ Booked</span>' : '<span style="color:var(--mid);font-size:12px;">—</span>'}</td>
+      <td style="font-size:11px;color:var(--mid);">${dateStr}<br>${timeStr}</td>
+      <td style="color:var(--copper);font-size:14px;">▾</td>
+    </tr>
+    <tr><td colspan="6" style="padding:0;">
+      <div id="expand_${i}" class="expand-content">
+        <div class="expand-grid">
+          <div>
+            <div class="expand-section-title">Call Summary</div>
+            <div class="expand-text">${c.call_summary || 'No summary available.'}</div>
+            ${c.heard_from ? `<div style="margin-top:10px;"><span style="font-size:10px;color:var(--copper);text-transform:uppercase;letter-spacing:1px;">Source:</span> <span style="font-size:12px;color:var(--cream);">${c.heard_from}</span></div>` : ''}
+            ${c.pain_point ? `<div style="margin-top:4px;"><span style="font-size:10px;color:var(--copper);text-transform:uppercase;letter-spacing:1px;">Pain Point:</span> <span style="font-size:12px;color:var(--cream);">${c.pain_point}</span></div>` : ''}
+            ${c.timeline ? `<div style="margin-top:4px;"><span style="font-size:10px;color:var(--copper);text-transform:uppercase;letter-spacing:1px;">Timeline:</span> <span style="font-size:12px;color:var(--cream);">${c.timeline}</span></div>` : ''}
+            <div style="margin-top:12px;">
+              <div class="expand-section-title">Notes</div>
+              <textarea class="notes-area" id="notes_${c.call_id}" placeholder="Add notes...">${c.notes || ''}</textarea>
+              <button class="save-note-btn" onclick="saveNote('${c.call_id}','notes_${c.call_id}',event)">Save Note</button>
+            </div>
+          </div>
+          <div>
+            <div class="expand-section-title">Transcript</div>
+            <div class="transcript-box">${c.transcript || 'No transcript available.'}</div>
+            ${c.recording_url ? `<div style="margin-top:10px;"><a href="${c.recording_url}" target="_blank" style="font-size:12px;color:var(--copper-light);">▶ Play Recording</a></div>` : ''}
+          </div>
+        </div>
+      </div>
+    </td></tr>`;
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+function toggleExpand(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('open');
+}
+
+async function saveNote(callId, textareaId, e){
+  e.stopPropagation();
+  const notes = document.getElementById(textareaId).value;
+  await sbPatch('call_logs', callId, {notes});
+  const btn = e.target;
+  btn.textContent = 'Saved ✓';
+  btn.style.background = 'var(--green)';
+  setTimeout(() => { btn.textContent = 'Save Note'; btn.style.background = 'var(--copper)'; }, 2000);
+}
+
+// BOOKINGS
+function renderBookings(){
+  const el = document.getElementById('bookingsContainer');
+  const upcoming = allBookings.filter(b => b.status !== 'canceled');
+  document.getElementById('bookingCount').textContent = upcoming.length + ' upcoming';
+  if(!upcoming.length){
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-text">No upcoming consultations</div></div>';
+    return;
+  }
+  el.innerHTML = upcoming.map(b => {
+    const dt = b.event_date ? new Date(b.event_date + 'T' + (b.event_time||'00:00')) : null;
+    const dateStr = dt ? dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) : '—';
+    const timeStr = b.event_time ? new Date('2000-01-01T'+b.event_time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) : '—';
+    return `<div class="booking-card">
+      <div style="display:flex;justify-content:space-between;align-items:start;">
+        <div>
+          <div class="booking-name">${b.caller_name || 'Unknown'}</div>
+          <div class="booking-meta">${b.business_type || ''} ${b.email ? '· ' + b.email : ''}</div>
+          <div class="booking-time">📅 ${dateStr} at ${timeStr}</div>
+        </div>
+        <span class="badge ${b.status === 'booked' ? 'badge-booked' : 'badge-pending'}">${b.status || 'booked'}</span>
+      </div>
+      <div class="booking-actions">
+        ${b.gcal_event_link ? `<a href="${b.gcal_event_link}" target="_blank"><button class="btn-sm btn-copper">View in Calendar</button></a>` : ''}
+        <button class="btn-sm btn-outline">Call Back</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// AFTER HOURS
+function renderAfterHours(){
+  const el = document.getElementById('afterHoursContainer');
+  const ah = allCalls.filter(c => c.call_type === 'after_hours' || (c.call_summary && c.call_summary.toLowerCase().includes('after')));
+  document.getElementById('afterHoursCount').textContent = ah.length;
+  if(!ah.length){
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🌙</div><div class="empty-text">No after-hours requests</div></div>';
+    return;
+  }
+  el.innerHTML = ah.slice(0,5).map(c => {
+    const dt = c.created_at ? new Date(c.created_at) : null;
+    const dateStr = dt ? dt.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Denver'}) : '—';
+    return `<div class="after-hours-card">
+      <div class="after-hours-name">${c.caller_name || 'Unknown'} <span style="font-size:11px;font-weight:400;color:var(--mid);">${c.from_number || ''}</span></div>
+      <div class="after-hours-meta">${c.business_type || 'Business type unknown'}</div>
+      <div class="after-hours-time">⏰ Called: ${dateStr}</div>
+      <div style="font-size:11px;color:var(--mid);margin-top:6px;">${c.call_summary ? c.call_summary.substring(0,100)+'...' : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+// CHARTS
+function renderCharts(){
+  const last7 = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    const dateStr = d.toISOString().split('T')[0];
+    const count = allCalls.filter(c => c.created_at && c.created_at.startsWith(dateStr)).length;
+    last7.push({label: d.toLocaleDateString('en-US',{weekday:'short'}), count});
+  }
+  if(volumeChart) volumeChart.destroy();
+  const vCtx = document.getElementById('volumeChart').getContext('2d');
+  volumeChart = new Chart(vCtx, {
+    type: 'bar',
+    data: {
+      labels: last7.map(d=>d.label),
+      datasets: [{
+        data: last7.map(d=>d.count),
+        backgroundColor: 'rgba(160,113,79,0.6)',
+        borderColor: '#A0714F',
+        borderWidth: 1,
+        borderRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {legend:{display:false}},
+      scales: {
+        x: {grid:{color:'rgba(160,113,79,0.08)'},ticks:{color:'#8A9BB0',font:{size:11}}},
+        y: {grid:{color:'rgba(160,113,79,0.08)'},ticks:{color:'#8A9BB0',font:{size:11},stepSize:1},beginAtZero:true}
+      }
+    }
+  });
+
+  const typeCounts = {};
+  allCalls.forEach(c => { const t = c.call_type || 'other'; typeCounts[t] = (typeCounts[t]||0)+1; });
+  if(typeChart) typeChart.destroy();
+  const tCtx = document.getElementById('typeChart').getContext('2d');
+  typeChart = new Chart(tCtx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(typeCounts),
+      datasets: [{
+        data: Object.values(typeCounts),
+        backgroundColor: ['rgba(46,204,113,0.7)','rgba(232,184,122,0.7)','rgba(138,155,176,0.7)','rgba(231,76,60,0.7)'],
+        borderColor: '#1B2A4A',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {legend:{position:'bottom',labels:{color:'#8A9BB0',font:{size:11},padding:12}}}
+    }
+  });
+}
+
+// INSIGHTS
+function renderInsights(){
+  renderInsightBar('heardFromContainer', allCalls, 'heard_from', 'No attribution data yet');
+  renderInsightBar('painPointsContainer', allCalls, 'pain_point', 'No pain point data yet');
+  renderInsightBar('bizTypeContainer', allCalls, 'business_type', 'No business type data yet');
+  renderInsightBar('timelineContainer', allCalls, 'timeline', 'No timeline data yet');
+}
+
+function renderInsightBar(elId, data, field, emptyMsg){
+  const el = document.getElementById(elId);
+  const counts = {};
+  data.forEach(c => { if(c[field]) counts[c[field]] = (counts[c[field]]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  if(!sorted.length){
+    el.innerHTML = `<div class="empty-state"><div class="empty-text">${emptyMsg}</div></div>`;
+    return;
+  }
+  const max = sorted[0][1];
+  el.innerHTML = sorted.map(([label,count]) =>
+    `<div class="insight-row">
+      <div class="insight-label">${label}</div>
+      <div class="insight-bar-wrap"><div class="insight-bar" style="width:${Math.round((count/max)*100)}%"></div></div>
+      <div class="insight-count">${count}</div>
+    </div>`
+  ).join('');
+}
+</script>
+</body>
+</html>

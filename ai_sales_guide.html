@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCG AI Solutions — Sales Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2535;
+    --navy-light: #243044;
+    --copper: #c4955a;
+    --copper-light: #d4aa78;
+    --copper-pale: #f5ead8;
+    --cream: #faf8f4;
+    --white: #ffffff;
+    --gray: #6b7280;
+    --gray-light: #f3f1ed;
+    --text: #1a2535;
+    --border: #e5ddd0;
+    --sauce-bg: #dce6f1;
+    --topping-bg: #f5f5f5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { background: white; font-size: 12px; }
+    .hero { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .golden-rule { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .service-card { break-inside: avoid; }
+    .copper-bar { background: var(--copper) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .navy-bar { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .closer { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .bundle-card { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 40px;
+    border-bottom: 2px solid var(--copper);
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; color: var(--copper); font-size: 18px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--copper-light); }
+  .print-btn { background: var(--copper); color: white; border: none; padding: 8px 18px; border-radius: 4px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: 0.04em; transition: background 0.2s; }
+  .print-btn:hover { background: var(--copper-light); }
+
+  /* HERO */
+  .hero { background: var(--navy); padding: 72px 60px 64px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -80px; right: -80px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(196,149,90,0.1) 0%, transparent 70%); }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); font-weight: 700; margin-bottom: 16px; }
+  .hero h1 { font-family: 'Playfair Display', serif; color: white; font-size: 50px; line-height: 1.15; font-weight: 900; max-width: 660px; margin-bottom: 18px; }
+  .hero h1 em { color: var(--copper-light); font-style: normal; }
+  .hero-sub { color: rgba(255,255,255,0.58); font-size: 16px; max-width: 500px; line-height: 1.7; margin-bottom: 32px; }
+  .hero-rule { width: 56px; height: 3px; background: var(--copper); margin-bottom: 32px; }
+  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-tag { background: rgba(196,149,90,0.14); border: 1px solid rgba(196,149,90,0.28); color: var(--copper-light); padding: 5px 14px; border-radius: 100px; font-size: 12px; font-weight: 500; }
+
+  /* GOLDEN RULE */
+  .golden-rule { background: var(--navy); padding: 48px 60px; border-left: 5px solid var(--copper); margin: 0; }
+  .golden-rule-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); font-weight: 700; margin-bottom: 12px; }
+  .golden-rule h2 { font-family: 'Playfair Display', serif; color: white; font-size: 28px; margin-bottom: 24px; }
+  .rule-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .rule-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(196,149,90,0.18); border-radius: 8px; padding: 18px; }
+  .rule-bad { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #ef9a9a; font-weight: 700; margin-bottom: 6px; }
+  .rule-better { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #a5d6a7; font-weight: 700; margin-bottom: 6px; margin-top: 12px; }
+  .rule-text-bad { color: rgba(255,255,255,0.35); font-size: 13px; font-style: italic; text-decoration: line-through; }
+  .rule-text-better { color: rgba(255,255,255,0.88); font-size: 13px; font-weight: 500; }
+
+  /* CONTAINER */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* POSITIONING */
+  .section-header { padding: 52px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+  .section-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); font-weight: 700; margin-bottom: 8px; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--navy); font-weight: 700; }
+  .section-header p { color: var(--gray); margin-top: 8px; font-size: 15px; max-width: 540px; }
+
+  .positioning-box { background: white; border: 1px solid var(--border); border-left: 5px solid var(--copper); border-radius: 8px; padding: 26px 30px; margin-bottom: 36px; }
+  .positioning-box .lead { font-size: 17px; color: var(--navy); line-height: 1.6; margin-bottom: 20px; }
+  .positioning-box strong { color: var(--copper); }
+  .dont-say { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .dont-box { background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 6px; padding: 14px 18px; }
+  .do-box { background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 6px; padding: 14px 18px; }
+  .dont-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: #c62828; margin-bottom: 8px; }
+  .do-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: #2e7d32; margin-bottom: 8px; }
+  .dont-items, .do-items { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+  .dont-items li { font-size: 13px; color: #b71c1c; text-decoration: line-through; opacity: 0.7; }
+  .do-items li { font-size: 13px; color: #1b5e20; font-weight: 500; }
+
+  /* SERVICE CARDS */
+  .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 52px; }
+  .service-card { background: white; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: box-shadow 0.25s, transform 0.25s; }
+  .service-card:hover { box-shadow: 0 10px 36px rgba(26,37,53,0.1); transform: translateY(-2px); }
+  .service-card.full { grid-column: 1 / -1; }
+  .card-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 14px; }
+  .card-number { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--copper-pale); line-height: 1; min-width: 40px; }
+  .card-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--copper); font-weight: 700; margin-bottom: 3px; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--navy); line-height: 1.2; }
+  .tier-badge { display: inline-block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; padding: 2px 9px; border-radius: 4px; margin-bottom: 4px; }
+  .tier-entry { background: #e8f5e9; color: #2e7d32; }
+  .tier-core { background: #e3f2fd; color: #1565c0; }
+  .tier-premium { background: #f3e5f5; color: #6a1b9a; }
+  .card-body { padding: 20px 24px; }
+  .card-desc { color: var(--gray); font-size: 13.5px; margin-bottom: 18px; line-height: 1.65; }
+  .card-section-title { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--navy); margin-bottom: 8px; margin-top: 16px; }
+  .card-section-title:first-of-type { margin-top: 0; }
+  .pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 2px; }
+  .pill { background: var(--gray-light); color: var(--navy); font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 500; }
+  .pill.copper { background: var(--copper-pale); color: #8a5e2a; }
+  .question-list { list-style: none; padding: 0; }
+  .question-list li { font-size: 13px; color: var(--text); padding: 6px 0 6px 18px; position: relative; border-bottom: 1px solid var(--gray-light); line-height: 1.5; }
+  .question-list li:last-child { border-bottom: none; }
+  .question-list li::before { content: '?'; position: absolute; left: 0; color: var(--copper); font-weight: 700; font-size: 13px; }
+  .addon-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+  .addon-list li { font-size: 12.5px; color: var(--gray); padding-left: 14px; position: relative; }
+  .addon-list li::before { content: '+'; position: absolute; left: 0; color: var(--copper); font-weight: 700; }
+
+  /* PIZZA FRAMEWORK */
+  .pizza-intro { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 28px 32px; margin-bottom: 36px; }
+  .pizza-intro h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 12px; }
+  .pizza-intro p { color: var(--gray); font-size: 15px; line-height: 1.7; }
+  .pizza-layers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .pizza-layer { border-radius: 8px; padding: 18px 20px; }
+  .pizza-layer.dough { background: var(--navy); }
+  .pizza-layer.sauce { background: var(--sauce-bg); }
+  .pizza-layer.toppings { background: var(--copper-pale); }
+  .pizza-layer-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+  .pizza-layer.dough .pizza-layer-label { color: var(--copper); }
+  .pizza-layer.sauce .pizza-layer-label { color: #1565c0; }
+  .pizza-layer.toppings .pizza-layer-label { color: #8a5e2a; }
+  .pizza-layer-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .pizza-layer.dough .pizza-layer-title { color: white; }
+  .pizza-layer.sauce .pizza-layer-title { color: var(--navy); }
+  .pizza-layer.toppings .pizza-layer-title { color: var(--navy); }
+  .pizza-layer-items { font-size: 12px; line-height: 1.7; }
+  .pizza-layer.dough .pizza-layer-items { color: rgba(255,255,255,0.6); }
+  .pizza-layer.sauce .pizza-layer-items { color: var(--gray); }
+  .pizza-layer.toppings .pizza-layer-items { color: #8a5e2a; }
+
+  /* COPPER BAR */
+  .copper-bar { background: var(--copper); padding: 10px 0; text-align: center; }
+  .copper-bar span { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: white; font-weight: 700; }
+
+  /* NAVY BAR */
+  .navy-bar { background: var(--navy); padding: 10px 0; text-align: center; }
+  .navy-bar span { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 500; }
+
+  /* TOPPINGS GRID */
+  .toppings-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 52px; }
+  .topping-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; }
+  .topping-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .topping-price { font-size: 12px; color: var(--copper); font-weight: 600; margin-bottom: 8px; }
+  .topping-desc { font-size: 12.5px; color: var(--gray); line-height: 1.55; }
+
+  /* BUNDLES */
+  .bundles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 52px; }
+  .bundle-card { background: var(--navy); border-radius: 10px; padding: 24px; position: relative; overflow: hidden; }
+  .bundle-card::after { content: ''; position: absolute; bottom: -24px; right: -24px; width: 100px; height: 100px; border-radius: 50%; background: rgba(196,149,90,0.1); }
+  .bundle-name { font-family: 'Playfair Display', serif; color: white; font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+  .bundle-items { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+  .bundle-items li { color: rgba(255,255,255,0.72); font-size: 13px; padding-left: 16px; position: relative; }
+  .bundle-items li::before { content: '✓'; position: absolute; left: 0; color: var(--copper); font-weight: 700; }
+
+  /* SALES FLOW */
+  .flow-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 52px; }
+  .flow-step { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
+  .flow-step-num { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; color: var(--copper-pale); line-height: 1; margin-bottom: 10px; }
+  .flow-step h3 { font-family: 'Playfair Display', serif; font-size: 19px; color: var(--navy); margin-bottom: 10px; }
+  .flow-step p { color: var(--gray); font-size: 13.5px; line-height: 1.65; }
+  .flow-tags { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .flow-tag { background: var(--copper-pale); color: #8a5e2a; font-size: 11px; padding: 3px 9px; border-radius: 100px; font-weight: 500; }
+
+  /* CLOSER */
+  .closer { background: var(--navy); padding: 52px 60px; border-top: 4px solid var(--copper); text-align: center; }
+  .closer h2 { font-family: 'Playfair Display', serif; color: white; font-size: 36px; margin-bottom: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.25; }
+  .closer-items { display: flex; justify-content: center; gap: 36px; flex-wrap: wrap; margin-top: 28px; }
+  .closer-item { color: rgba(255,255,255,0.82); font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .closer-item::before { content: '→'; color: var(--copper); font-size: 16px; }
+
+  /* PRICE TAG */
+  .price-tag { display: inline-flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .price-setup { background: var(--navy); color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; }
+  .price-mo { background: var(--copper-pale); color: #8a5e2a; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav no-print">
+  <div class="nav-logo">TCG × Canick</div>
+  <ul class="nav-links">
+    <li><a href="#positioning">Positioning</a></li>
+    <li><a href="#framework">Framework</a></li>
+    <li><a href="#entry">Entry</a></li>
+    <li><a href="#core">Core</a></li>
+    <li><a href="#premium">Premium</a></li>
+    <li><a href="#toppings">Toppings</a></li>
+    <li><a href="#bundles">Bundles</a></li>
+    <li><a href="#flow">Sales Flow</a></li>
+  </ul>
+  <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Canick AI Solutions — TCG Sales Guide</div>
+  <h1>Sell the <em>outcome.</em><br>Not the technology.</h1>
+  <div class="hero-rule"></div>
+  <p class="hero-sub">Your clients aren't buying AI. They're buying responsiveness, recovered revenue, reduced workload, and better customer communication.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Missed Revenue Recovery</span>
+    <span class="hero-tag">Communication Automation</span>
+    <span class="hero-tag">Reduced Labor Strain</span>
+    <span class="hero-tag">Customer Responsiveness</span>
+    <span class="hero-tag">Operational Efficiency</span>
+  </div>
+</div>
+
+<!-- GOLDEN RULE -->
+<div class="golden-rule" id="positioning">
+  <div class="golden-rule-label">The Golden Rule</div>
+  <h2>Sell the Problem First. Always.</h2>
+  <div class="rule-grid">
+    <div class="rule-card">
+      <div class="rule-bad">❌ Don't Say</div>
+      <div class="rule-text-bad">"Would you like an AI receptionist?"</div>
+      <div class="rule-better">✓ Say Instead</div>
+      <div class="rule-text-better">"How many calls do you think your business misses each week?"</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-bad">❌ Don't Say</div>
+      <div class="rule-text-bad">"We provide appointment automation."</div>
+      <div class="rule-better">✓ Say Instead</div>
+      <div class="rule-text-better">"How many no-shows do you deal with every month?"</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-bad">❌ Don't Say</div>
+      <div class="rule-text-bad">"We offer AI review generation."</div>
+      <div class="rule-better">✓ Say Instead</div>
+      <div class="rule-text-better">"Do you actively ask customers for reviews after every job?"</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- POSITIONING -->
+  <div class="section-header" style="padding-top: 52px;">
+    <div class="section-eyebrow">How To Position</div>
+    <h2>Language That Opens Doors</h2>
+  </div>
+
+  <div class="positioning-box">
+    <p class="lead">Lead with: <strong>"We help businesses automate communication, recover missed revenue, improve responsiveness, and reduce labor strain."</strong></p>
+    <p style="color:var(--gray); font-size:14px; margin-bottom:18px;">Your job is to uncover missed opportunities, communication bottlenecks, customer frustration, staff overload, and revenue leakage — then match the right solution.</p>
+    <div class="dont-say">
+      <div class="dont-box">
+        <div class="dont-label">Never Lead With</div>
+        <ul class="dont-items">
+          <li>Artificial Intelligence</li>
+          <li>Automation Systems</li>
+          <li>AI Technology</li>
+        </ul>
+      </div>
+      <div class="do-box">
+        <div class="do-label">Always Lead With</div>
+        <ul class="do-items">
+          <li>Missed opportunities</li>
+          <li>Recovered revenue</li>
+          <li>Reduced workload</li>
+          <li>Better customer experience</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIZZA FRAMEWORK -->
+  <div class="section-header" id="framework">
+    <div class="section-eyebrow">The Framework</div>
+    <h2>Building the Pizza</h2>
+    <p>Every client starts with a Sauce — their core need. Then they pick Toppings to customize.</p>
+  </div>
+
+  <div class="pizza-intro">
+    <h3>🍕 Think of it like building a pizza.</h3>
+    <p>The dough is AI — it's what makes everything possible. The sauce is the core function the client needs most. The toppings are individual features they choose to add on. Nobody orders the same pizza. Some want just cheese. Some want everything. Your job is to find out what they're hungry for.</p>
+    <div class="pizza-layers">
+      <div class="pizza-layer dough">
+        <div class="pizza-layer-label">The Base</div>
+        <div class="pizza-layer-title">🤖 AI</div>
+        <div class="pizza-layer-items">The foundation. Every engagement starts here. Without it, nothing else works.</div>
+      </div>
+      <div class="pizza-layer sauce">
+        <div class="pizza-layer-label">Pick One</div>
+        <div class="pizza-layer-title">🍅 The Sauce</div>
+        <div class="pizza-layer-items">Receptionist · After-Hours Dispatch · Collections · Scheduling · Job Tracking · Lead Follow-Up · Client Onboarding</div>
+      </div>
+      <div class="pizza-layer toppings">
+        <div class="pizza-layer-label">Mix & Match</div>
+        <div class="pizza-layer-title">🧀 The Toppings</div>
+        <div class="pizza-layer-items">Missed Call Recovery · Reviews · Reminders · Intake Flows · Status Updates · Payments · Re-Engagement · Dashboard · and more</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTRY LEVEL -->
+  <div class="section-header" id="entry">
+    <div class="section-eyebrow">Start Here — Easy to Close</div>
+    <h2>Entry-Level Services</h2>
+    <p>Low friction, immediate value. These are your conversation starters.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">01</div>
+        <div>
+          <div class="tier-badge tier-entry">Entry Level</div>
+          <div class="card-title">Missed Call Recovery</div>
+          <div class="price-tag"><span class="price-setup">$500 setup</span><span class="price-mo">$79/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">The moment a call goes unanswered, AI instantly texts the customer — capturing the lead, starting a conversation, alerting the business if needed.</p>
+        <div class="card-section-title">Why They Buy It</div>
+        <div class="pill-group">
+          <span class="pill copper">Stops lost revenue</span><span class="pill copper">Instant response</span><span class="pill copper">Customers feel acknowledged</span>
+        </div>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Contractors</span><span class="pill">Medical</span><span class="pill">Attorneys</span><span class="pill">Dealerships</span><span class="pill">Service Businesses</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>How often do your phones go unanswered?</li>
+          <li>What happens to callers after hours?</li>
+          <li>Do missed calls cost you business?</li>
+        </ul>
+        <div class="card-section-title">Natural Add-Ons</div>
+        <ul class="addon-list">
+          <li>Appointment Scheduling</li><li>Review Requests</li><li>Lead Follow-Up Sequences</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">02</div>
+        <div>
+          <div class="tier-badge tier-entry">Entry Level</div>
+          <div class="card-title">Appointment Reminders</div>
+          <div class="price-tag"><span class="price-setup">$500 setup</span><span class="price-mo">$79/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Automated confirmations, reminders, and rescheduling — no staff involvement. No-shows drop. Front desk time gets reclaimed.</p>
+        <div class="card-section-title">Why They Buy It</div>
+        <div class="pill-group">
+          <span class="pill copper">Saves staff time</span><span class="pill copper">Reduces no-shows</span><span class="pill copper">Improves efficiency</span>
+        </div>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Medical</span><span class="pill">Dental</span><span class="pill">Attorneys</span><span class="pill">Salons</span><span class="pill">Consultants</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>How many no-shows in a typical month?</li>
+          <li>How much staff time is spent confirming appointments?</li>
+        </ul>
+        <div class="card-section-title">Natural Add-Ons</div>
+        <ul class="addon-list">
+          <li>AI Scheduling</li><li>Waitlist Automation</li><li>Review Requests</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">03</div>
+        <div>
+          <div class="tier-badge tier-entry">Entry Level</div>
+          <div class="card-title">Review Booster</div>
+          <div class="price-tag"><span class="price-setup">$500 setup</span><span class="price-mo">$79/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Automatically requests Google reviews immediately after service — at exactly the moment customer satisfaction is highest.</p>
+        <div class="card-section-title">Why They Buy It</div>
+        <div class="pill-group">
+          <span class="pill copper">Improves reputation</span><span class="pill copper">Increases trust</span><span class="pill copper">Boosts SEO</span>
+        </div>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Restaurants</span><span class="pill">Contractors</span><span class="pill">Dealerships</span><span class="pill">Medical</span><span class="pill">Retail</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>Do you actively ask for reviews after every job?</li>
+          <li>Would more positive reviews help your business?</li>
+        </ul>
+        <div class="card-section-title">Natural Add-Ons</div>
+        <ul class="addon-list">
+          <li>Customer Follow-Up Automation</li><li>Referral Ask</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE SERVICES -->
+  <div class="section-header" id="core">
+    <div class="section-eyebrow">Tier 2 — Higher Revenue</div>
+    <h2>Core Services (Sauces)</h2>
+    <p>Recurring revenue. Deep integration. Clients who buy these don't leave.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">04</div>
+        <div>
+          <div class="tier-badge tier-core">Core</div>
+          <div class="card-title">AI Receptionist</div>
+          <div class="price-tag"><span class="price-setup">$1,500 setup</span><span class="price-mo">$249/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Answers every call 24/7. Handles FAQs, routes calls, captures leads, schedules appointments, and sends follow-up texts — without a front desk.</p>
+        <div class="card-section-title">Why They Buy It</div>
+        <div class="pill-group">
+          <span class="pill copper">Never misses a call</span><span class="pill copper">Reduces front desk load</span><span class="pill copper">After-hours coverage</span>
+        </div>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Law Firms</span><span class="pill">Medical</span><span class="pill">Contractors</span><span class="pill">Storage</span><span class="pill">Dealerships</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>Who answers your phones right now?</li>
+          <li>What happens when they're unavailable?</li>
+          <li>Do customers complain about reaching someone?</li>
+        </ul>
+        <div class="card-section-title">Natural Add-Ons</div>
+        <ul class="addon-list">
+          <li>Appointment Scheduling</li><li>Dashboard</li><li>SMS Follow-Up</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">05</div>
+        <div>
+          <div class="tier-badge tier-core">Core</div>
+          <div class="card-title">After-Hours Dispatch</div>
+          <div class="price-tag"><span class="price-setup">$1,800 setup</span><span class="price-mo">$299/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Manages emergency and after-hours calls. Qualifies urgency, escalates to on-call staff via SMS, logs every ticket, and sends daily system checks.</p>
+        <div class="card-section-title">Why They Buy It</div>
+        <div class="pill-group">
+          <span class="pill copper">Zero missed emergencies</span><span class="pill copper">On-call staff protected</span><span class="pill copper">Full ticket trail</span>
+        </div>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Plumbers</span><span class="pill">Electricians</span><span class="pill">Property Mgmt</span><span class="pill">HVAC</span><span class="pill">Storage</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>What happens when an emergency call comes in at 2AM?</li>
+          <li>How do you protect your on-call staff from non-emergency calls?</li>
+        </ul>
+        <div class="card-section-title">Natural Add-Ons</div>
+        <ul class="addon-list">
+          <li>Dashboard</li><li>Status Updater</li><li>Missed Call Recovery</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">06</div>
+        <div>
+          <div class="tier-badge tier-core">Core</div>
+          <div class="card-title">AI Scheduling</div>
+          <div class="price-tag"><span class="price-setup">$1,200 setup</span><span class="price-mo">$199/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Books appointments, checks availability, sends confirmations and reminders, handles reschedules — fully automated. 24/7 booking access for customers.</p>
+        <div class="card-section-title">Why They Buy It</div>
+        <div class="pill-group">
+          <span class="pill copper">Reduces staff workload</span><span class="pill copper">24/7 availability</span><span class="pill copper">Fewer no-shows</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>How much time is spent scheduling each week?</li>
+          <li>Do customers ever struggle to get booked in?</li>
+        </ul>
+        <div class="card-section-title">Natural Add-Ons</div>
+        <ul class="addon-list">
+          <li>Waitlist Activator</li><li>Intake Flow</li><li>Payment Collection at Booking</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">07</div>
+        <div>
+          <div class="tier-badge tier-core">Core</div>
+          <div class="card-title">AI Job Tracking</div>
+          <div class="price-tag"><span class="price-setup">$1,500 setup</span><span class="price-mo">$249/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Keeps customers informed on job progress with proactive SMS status updates. Eliminates the "where is my tech?" phone call entirely.</p>
+        <div class="card-section-title">Why They Buy It</div>
+        <div class="pill-group">
+          <span class="pill copper">Fewer inbound calls</span><span class="pill copper">Happier customers</span><span class="pill copper">Better reviews</span>
+        </div>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Plumbers</span><span class="pill">Electricians</span><span class="pill">HVAC</span><span class="pill">Contractors</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>How many calls do you get asking where the tech is?</li>
+          <li>Do customers ever complain about being left in the dark?</li>
+        </ul>
+        <div class="card-section-title">Natural Add-Ons</div>
+        <ul class="addon-list">
+          <li>Review Requester</li><li>Post-Job Check-In</li><li>Payment Collection</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMIUM -->
+  <div class="section-header" id="premium">
+    <div class="section-eyebrow">Tier 3 — Consultative</div>
+    <h2>Premium Services</h2>
+    <p>These need a deeper conversation. Find the pain point first.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">08</div>
+        <div>
+          <div class="tier-badge tier-premium">Premium</div>
+          <div class="card-title">AI Lead Follow-Up</div>
+          <div class="price-tag"><span class="price-setup">$1,200 setup</span><span class="price-mo">$199/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Automatically follows up on estimates, quotes, abandoned inquiries, and old leads via timed SMS sequences. Revenue assumed lost — recovered.</p>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Contractors</span><span class="pill">Dealerships</span><span class="pill">Real Estate</span><span class="pill">Professional Services</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>How many estimates go out without a response each month?</li>
+          <li>What does your current follow-up process look like?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="card-header">
+        <div class="card-number">09</div>
+        <div>
+          <div class="tier-badge tier-premium">Premium</div>
+          <div class="card-title">AI Collections</div>
+          <div class="price-tag"><span class="price-setup">$1,200 setup</span><span class="price-mo">$199/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Automates payment reminders, overdue notifications, and Stripe payment links via SMS. Not aggressive collections — professional, consistent communication that gets invoices paid.</p>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Medical</span><span class="pill">Storage</span><span class="pill">Property Mgmt</span><span class="pill">Service Providers</span>
+        </div>
+        <div class="card-section-title">Discovery Questions</div>
+        <ul class="question-list">
+          <li>How much time is spent chasing unpaid invoices each month?</li>
+          <li>Do you have a consistent follow-up process for overdue accounts?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-card full">
+      <div class="card-header">
+        <div class="card-number">10</div>
+        <div>
+          <div class="tier-badge tier-premium">Premium</div>
+          <div class="card-title">AI Client Onboarding</div>
+          <div class="price-tag"><span class="price-setup">$1,500 setup</span><span class="price-mo">$199/mo</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Collects new client details, assets, and intake information via structured SMS or voice flow. Replaces manual email chains with a consistent, automated onboarding process. Best for agencies, law firms, and multi-step service businesses.</p>
+        <div class="card-section-title">Best Targets</div>
+        <div class="pill-group">
+          <span class="pill">Marketing Agencies</span><span class="pill">Law Firms</span><span class="pill">Therapists</span><span class="pill">Consultants</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOPPINGS SECTION -->
+<div class="copper-bar" id="toppings"><span>🧀 &nbsp; TOPPINGS — Add-On Features &nbsp; 🧀</span></div>
+
+<div class="container">
+  <div style="padding: 32px 0 20px;">
+    <p style="color:var(--gray); font-size:15px; max-width:600px;">Any topping can be added to any sauce. Stack them to increase value — and monthly recurring revenue.</p>
+  </div>
+
+  <div class="toppings-grid">
+    <div class="topping-card">
+      <div class="topping-name">Missed Call Recovery</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Instantly texts anyone who hung up before answering. Stops lost leads cold.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">FAQ Answers</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">AI answers common questions 24/7 — hours, pricing, service area.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Appointment Reminders</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Confirmation, 48hr, and 2hr reminders. Rescheduling handled automatically.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Review Requester</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Google review request via SMS at job close — peak satisfaction moment.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Intake / Screening Flow</div>
+      <div class="topping-price">$750 setup · $99/mo</div>
+      <div class="topping-desc">Collects job or case details before a human ever engages. Saves 20-30 min per new client.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Status Updater</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Proactive job, case, or project status texts so customers stop calling to ask.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Payment Collection</div>
+      <div class="topping-price">$750 setup · $99/mo</div>
+      <div class="topping-desc">Sends a Stripe payment link via SMS at job close. Frictionless, immediate payment.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Waitlist Activator</div>
+      <div class="topping-price">$750 setup · $99/mo</div>
+      <div class="topping-desc">Cancellation opens a slot — AI works the waitlist. First to confirm gets it.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Re-Engagement Sequence</div>
+      <div class="topping-price">$750 setup · $99/mo</div>
+      <div class="topping-desc">Reaches out to inactive clients with a warm message and easy path back.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Estimate Follow-Up</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Automatically chases unanswered quotes until the customer responds or opts out.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Referral Ask</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">At job close, AI asks the happy customer for a referral at exactly the right moment.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Post-Job Check-In</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">30-day follow-up confirming satisfaction and opening the door for next service.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Dashboard</div>
+      <div class="topping-price">$1,000 setup · $99/mo</div>
+      <div class="topping-desc">Owner portal showing all tickets, comms, and activity. Click to text or email directly.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Between-Session Check-In</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Post-session wellness SMS logged for provider review before next appointment.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Insurance Verification</div>
+      <div class="topping-price">$750 setup · $99/mo</div>
+      <div class="topping-desc">Follows up with patients on insurance status so they don't fall through the cracks.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Pre-Order Capture</div>
+      <div class="topping-price">$750 setup · $99/mo</div>
+      <div class="topping-desc">Handles pre-order intake via SMS, logs orders, confirms pickup. Built for seasonal demand.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Loyalty / Repeat Business</div>
+      <div class="topping-price">$750 setup · $99/mo</div>
+      <div class="topping-desc">Personalized re-engagement offers based on purchase history. No paid ads needed.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">Dead Inventory Push</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Targeted SMS to past customers about specials, discounts, or slow-moving inventory.</div>
+    </div>
+    <div class="topping-card">
+      <div class="topping-name">After-Hours Lead Capture</div>
+      <div class="topping-price">$500 setup · $79/mo</div>
+      <div class="topping-desc">Captures and qualifies after-hours leads immediately. Queued for morning follow-up.</div>
+    </div>
+  </div>
+
+  <!-- BUNDLES -->
+  <div class="section-header" id="bundles">
+    <div class="section-eyebrow">Pre-Built Packages</div>
+    <h2>Industry Bundles</h2>
+    <p>Use these when a client maps cleanly to an industry. Simplifies the conversation.</p>
+  </div>
+
+  <div class="bundles-grid">
+    <div class="bundle-card">
+      <div class="bundle-name">🔧 Contractor Package</div>
+      <ul class="bundle-items">
+        <li>AI Receptionist</li>
+        <li>Missed Call Recovery</li>
+        <li>Appointment Reminders</li>
+        <li>Review Booster</li>
+        <li>Post-Job Check-In</li>
+      </ul>
+    </div>
+    <div class="bundle-card">
+      <div class="bundle-name">⚖️ Law Firm Intake Package</div>
+      <ul class="bundle-items">
+        <li>AI Receptionist</li>
+        <li>Intake / Screening Flow</li>
+        <li>AI Scheduling</li>
+        <li>Lead Follow-Up</li>
+        <li>Dashboard</li>
+      </ul>
+    </div>
+    <div class="bundle-card">
+      <div class="bundle-name">🚗 Auto Dealer Package</div>
+      <ul class="bundle-items">
+        <li>AI Receptionist</li>
+        <li>AI Scheduling</li>
+        <li>Status Updater</li>
+        <li>Missed Call Recovery</li>
+        <li>Review Requester</li>
+      </ul>
+    </div>
+    <div class="bundle-card">
+      <div class="bundle-name">🏢 Property Management Package</div>
+      <ul class="bundle-items">
+        <li>After-Hours Dispatch</li>
+        <li>Missed Call Recovery</li>
+        <li>Status Updater</li>
+        <li>AI Collections</li>
+        <li>Dashboard</li>
+      </ul>
+    </div>
+    <div class="bundle-card">
+      <div class="bundle-name">🧠 Therapist / Counselor Package</div>
+      <ul class="bundle-items">
+        <li>AI Receptionist</li>
+        <li>AI Scheduling</li>
+        <li>Waitlist Activator</li>
+        <li>Between-Session Check-In</li>
+        <li>Insurance Verification</li>
+      </ul>
+    </div>
+    <div class="bundle-card">
+      <div class="bundle-name">🍖 Retail / Meat Market Package</div>
+      <ul class="bundle-items">
+        <li>AI Receptionist</li>
+        <li>Pre-Order Capture</li>
+        <li>Dead Inventory Push</li>
+        <li>Loyalty / Repeat Business</li>
+        <li>Review Requester</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SALES FLOW -->
+  <div class="section-header" id="flow">
+    <div class="section-eyebrow">The Process</div>
+    <h2>Sales Flow</h2>
+    <p>Follow this on every conversation.</p>
+  </div>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-step-num">1</div>
+      <h3>Find the Pain Point</h3>
+      <p>Ask questions until you hear frustration. Don't pitch anything until you've identified the specific problem costing them time or money.</p>
+      <div class="flow-tags">
+        <span class="flow-tag">Missed calls?</span>
+        <span class="flow-tag">No-shows?</span>
+        <span class="flow-tag">Slow follow-up?</span>
+        <span class="flow-tag">Unpaid invoices?</span>
+        <span class="flow-tag">Staff overload?</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">2</div>
+      <h3>Match the Solution</h3>
+      <p>Don't walk through every feature. Only explain the problem, the outcome, and the ROI. One clear solution to one clear problem.</p>
+      <div class="flow-tags">
+        <span class="flow-tag">Name the problem</span>
+        <span class="flow-tag">Show the outcome</span>
+        <span class="flow-tag">State the ROI</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">3</div>
+      <h3>Add Simple Upsells</h3>
+      <p>Once they've committed to one solution, offer one natural add-on. Frame it as a question, not a feature.</p>
+      <div class="flow-tags">
+        <span class="flow-tag">"Would it also help if…"</span>
+        <span class="flow-tag">"One thing clients add…"</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CLOSER -->
+<div class="closer">
+  <h2>They're not buying AI.<br>They're buying this.</h2>
+  <div class="closer-items">
+    <div class="closer-item">Responsiveness</div>
+    <div class="closer-item">Consistency</div>
+    <div class="closer-item">Recovered Revenue</div>
+    <div class="closer-item">Reduced Workload</div>
+    <div class="closer-item">Better Communication</div>
+    <div class="closer-item">Operational Efficiency</div>
+  </div>
+</div>
+
+</body>
+</html>

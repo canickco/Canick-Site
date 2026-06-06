@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Canick Lead Qualifier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0f14; --panel:#141a22; --panel2:#1b222c; --line:#283242;
+    --text:#e7eef6; --muted:#8a97a8; --accent:#e0954a;
+    --green:#57b97e; --blue:#5a9bd4; --amber:#d9b44a; --red:#d96a6a; --violet:#9a7fd0;
+    --mono:'JetBrains Mono',ui-monospace,monospace; --sans:'Archivo',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:
+      radial-gradient(1100px 600px at 80% -10%, rgba(224,149,74,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, rgba(90,155,212,.07), transparent 55%), var(--bg);
+    color:var(--text); font-family:var(--sans); min-height:100vh; -webkit-font-smoothing:antialiased;}
+  .mono{font-family:var(--mono)}
+  button{font-family:var(--sans); cursor:pointer; border:none}
+  input,textarea,select{font-family:var(--sans)}
+
+  /* login */
+  #gate{position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(800px 500px at 50% 0%, rgba(224,149,74,.08), transparent), var(--bg); z-index:80;}
+  .card{width:min(380px,92vw); background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:34px 30px; box-shadow:0 30px 80px rgba(0,0,0,.5);}
+  .brand{display:flex; align-items:center; gap:11px; margin-bottom:22px}
+  .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+  .brand h1{font-size:17px; font-weight:800; margin:0}
+  .brand span{color:var(--muted); font-size:12px; display:block; font-weight:500; letter-spacing:.04em; text-transform:uppercase}
+  label{display:block;font-size:12px;color:var(--muted);margin:0 0 7px;letter-spacing:.03em}
+  input[type=password],input[type=text]{width:100%; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:12px 13px; font-family:var(--mono); font-size:14px; outline:none;}
+  input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+  .btn{background:var(--accent); color:#1a1206; font-weight:700; border-radius:10px; padding:12px 16px; font-size:14px; transition:filter .15s;}
+  .btn:hover{filter:brightness(1.07)}
+  .btn.block{width:100%; margin-top:16px}
+  .btn.ghost{background:var(--panel2); color:var(--text); border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--accent)}
+  .btn.sm{padding:8px 13px; font-size:13px}
+  .btn.tiny{padding:6px 11px; font-size:12px}
+  .err{color:var(--red); font-size:12.5px; margin-top:12px; min-height:16px; font-family:var(--mono)}
+
+  /* app shell */
+  #app{display:none; max-width:1320px; margin:0 auto; padding:24px 24px 70px}
+  header.top{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:14px}
+  .title{display:flex; align-items:center; gap:12px}
+  .title h1{margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em}
+  .title small{color:var(--muted); font-size:12px; letter-spacing:.04em; text-transform:uppercase; display:block; margin-top:2px}
+  .tabs{display:flex; gap:6px; background:var(--panel); border:1px solid var(--line); border-radius:11px; padding:4px}
+  .tab{background:transparent; color:var(--muted); padding:8px 18px; border-radius:8px; font-weight:600; font-size:13.5px}
+  .tab.active{background:var(--accent); color:#1a1206}
+
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:11px; margin-bottom:20px}
+  .tile{background:var(--panel); border:1px solid var(--line); border-radius:13px; padding:14px 15px; position:relative; overflow:hidden}
+  .tile .n{font-family:var(--mono); font-size:25px; font-weight:700; line-height:1}
+  .tile .l{color:var(--muted); font-size:11px; margin-top:6px; letter-spacing:.05em; text-transform:uppercase}
+  .tile.hot{border-color:rgba(87,185,126,.4)} .tile.hot .n{color:var(--green)}
+  .tile.hot::after{content:''; position:absolute; right:-20px; top:-20px; width:70px; height:70px; background:radial-gradient(circle,rgba(87,185,126,.18),transparent 70%)}
+
+  .barrow{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:16px}
+  .spacer{flex:1}
+  select.run{background:var(--panel); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:8px 11px; font-size:13px}
+  .chip{background:var(--panel); border:1px solid var(--line); color:var(--muted); padding:7px 13px; border-radius:999px; font-size:12.5px; font-weight:600}
+  .chip:hover{color:var(--text)} .chip.active{background:var(--accent); color:#1a1206; border-color:var(--accent)}
+  .search input{width:200px; padding:8px 12px; font-family:var(--sans); font-size:13px; background:var(--panel); border:1px solid var(--line); color:var(--text); border-radius:9px; outline:none}
+
+  /* runs grid */
+  .runs{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px}
+  .run{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:13px}
+  .run h3{margin:0; font-size:16px; font-weight:700}
+  .run .mkt{color:var(--muted); font-size:12.5px; margin-top:2px}
+  .run .rstats{display:flex; gap:18px; margin-top:2px}
+  .run .rstats div{font-size:11px; color:var(--muted); letter-spacing:.04em; text-transform:uppercase}
+  .run .rstats b{display:block; font-family:var(--mono); font-size:19px; color:var(--text); font-weight:700; margin-top:3px}
+  .run .rstats .g b{color:var(--green)}
+  .run .ract{display:flex; gap:7px; flex-wrap:wrap; margin-top:auto}
+  .newrun{display:flex; align-items:center; justify-content:center; border:1px dashed var(--line); color:var(--muted); font-weight:600; min-height:150px; border-radius:14px}
+  .newrun:hover{border-color:var(--accent); color:var(--accent)}
+
+  /* table */
+  .tablewrap{background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:auto}
+  table{width:100%; border-collapse:collapse; font-size:13.5px}
+  thead th{text-align:left; padding:13px 14px; color:var(--muted); font-size:11px; letter-spacing:.06em; text-transform:uppercase; font-weight:600; border-bottom:1px solid var(--line); background:var(--panel2); white-space:nowrap;}
+  tbody td{padding:11px 14px; border-bottom:1px solid rgba(40,50,66,.55); vertical-align:middle}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:rgba(27,34,44,.6)}
+  tr.gap{background:rgba(87,185,126,.05)} tr.gap:hover{background:rgba(87,185,126,.1)}
+  .biz{font-weight:600} .sub{color:var(--muted); font-size:12px; margin-top:2px}
+  .score{font-family:var(--mono); font-weight:700; font-size:15px} .score.final{color:var(--accent)}
+  .badge{display:inline-block; padding:3px 9px; border-radius:6px; font-size:11.5px; font-weight:700; font-family:var(--mono)}
+  .b-queued{background:rgba(90,155,212,.15); color:var(--blue)} .b-calling{background:rgba(217,180,74,.15); color:var(--amber)}
+  .b-done{background:rgba(87,185,126,.15); color:var(--green)} .b-review{background:rgba(154,127,208,.16); color:var(--violet)}
+  .b-skip{background:rgba(138,151,168,.15); color:var(--muted)} .b-failed,.b-dnc{background:rgba(217,106,106,.15); color:var(--red)}
+  .b-voicemail{background:rgba(87,185,126,.15); color:var(--green)} .b-human{background:rgba(90,155,212,.15); color:var(--blue)}
+  .b-ivr{background:rgba(154,127,208,.16); color:var(--violet)} .b-no_answer{background:rgba(217,180,74,.15); color:var(--amber)}
+  .b-auto{background:rgba(224,149,74,.14); color:var(--accent)} .b-upload{background:rgba(138,151,168,.13); color:var(--muted)}
+  .gapyes{color:var(--green); font-weight:700; font-family:var(--mono)} .gapno{color:var(--muted); font-family:var(--mono)}
+  .empty{padding:46px; text-align:center; color:var(--muted)} .empty .big{font-size:15px; color:var(--text); margin-bottom:6px; font-weight:600}
+
+  /* modal + drawer */
+  .scrim{position:fixed; inset:0; background:rgba(5,7,10,.72); display:none; align-items:center; justify-content:center; z-index:70; padding:20px}
+  .scrim.show{display:flex}
+  .modal{width:min(560px,96vw); background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:26px; max-height:88vh; overflow:auto; box-shadow:0 30px 80px rgba(0,0,0,.55)}
+  .modal h2{margin:0 0 4px; font-size:18px}
+  .modal p.s{color:var(--muted); font-size:13px; margin:0 0 18px}
+  .field{margin-bottom:14px}
+  textarea{width:100%; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:12px; font-family:var(--mono); font-size:12.5px; min-height:160px; line-height:1.5; resize:vertical}
+  .row2{display:flex; gap:18px; align-items:center; justify-content:flex-end; margin-top:8px}
+
+  .drawer{position:fixed; top:0; right:0; height:100%; width:min(540px,96vw); background:var(--panel); border-left:1px solid var(--line); transform:translateX(100%); transition:.28s; z-index:75; overflow:auto; padding:26px}
+  .drawer.show{transform:translateX(0)}
+  .dhead{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:18px}
+  .dhead h2{margin:0; font-size:19px}
+  .x{background:var(--panel2); border:1px solid var(--line); color:var(--muted); border-radius:8px; width:32px; height:32px; font-size:16px}
+  .x:hover{color:var(--text)}
+  .kv{display:grid; grid-template-columns:130px 1fr; gap:8px 14px; font-size:13.5px; margin-bottom:20px}
+  .kv .k{color:var(--muted)} .kv .v{font-weight:500}
+  .sec{font-size:11px; color:var(--muted); letter-spacing:.07em; text-transform:uppercase; margin:18px 0 9px; font-weight:700}
+  pre.transcript{background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:14px; font-family:var(--mono); font-size:12.5px; white-space:pre-wrap; line-height:1.6; color:#cdd7e3; max-height:320px; overflow:auto}
+  audio{width:100%; margin-top:4px}
+
+  #toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--panel2); border:1px solid var(--line); color:var(--text); padding:13px 20px; border-radius:12px; font-size:13.5px; opacity:0; pointer-events:none; transition:.25s; max-width:90vw; box-shadow:0 20px 50px rgba(0,0,0,.5); z-index:90}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)} #toast.ok{border-color:rgba(87,185,126,.5)} #toast.bad{border-color:rgba(217,106,106,.5)}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--muted);border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="card">
+    <div class="brand"><span class="dot"></span><div><h1>Canick Lead Qualifier</h1><span>Control Panel</span></div></div>
+    <label for="tok">Access token</label>
+    <input id="tok" type="password" placeholder="••••••••" autocomplete="off" />
+    <button class="btn block" id="login">Unlock</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+</div>
+
+<div id="app">
+  <header class="top">
+    <div class="title"><span class="dot"></span><div><h1>Lead Qualifier</h1><small>Canick · Billings, MT</small></div></div>
+    <div class="tabs">
+      <button class="tab active" data-tab="runs">Runs</button>
+      <button class="tab" data-tab="leads">Leads</button>
+    </div>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <!-- RUNS TAB -->
+  <section id="tab-runs">
+    <div class="runs" id="runs"></div>
+  </section>
+
+  <!-- LEADS TAB -->
+  <section id="tab-leads" class="hidden">
+    <div class="barrow">
+      <select class="run" id="runFilter"><option value="all">All runs</option><option value="none">No run</option></select>
+      <button class="chip active" data-f="all">All</button>
+      <button class="chip" data-f="gaps">★ Gaps</button>
+      <button class="chip" data-f="queued">Queued</button>
+      <button class="chip" data-f="calling">Calling</button>
+      <button class="chip" data-f="done">Done</button>
+      <button class="chip" data-f="review">Review</button>
+      <button class="chip" data-f="skip">Skip</button>
+      <button class="chip" data-f="dnc">DNC</button>
+      <div class="spacer"></div>
+      <div class="search"><input id="search" type="text" placeholder="Search business…" /></div>
+      <button class="btn ghost sm" id="uploadGlobal">⬆ Upload</button>
+      <button class="btn ghost sm" id="runBtn">▶ Run calls</button>
+      <button class="btn ghost sm" id="refreshBtn">↻</button>
+    </div>
+    <div class="tablewrap">
+      <table><thead><tr>
+        <th>Business</th><th>Niche</th><th>Src</th><th>Desk</th><th>Call</th><th>Gap</th><th>Final</th><th>Status</th><th>Att</th>
+      </tr></thead><tbody id="rows"></tbody></table>
+    </div>
+  </section>
+</div>
+
+<!-- new run modal -->
+<div class="scrim" id="newRunScrim">
+  <div class="modal">
+    <h2>New industry run</h2>
+    <p class="s">Define the target, then research it automatically or hand it to Cowork.</p>
+    <div class="field"><label>Industry</label><input id="nrIndustry" type="text" placeholder="HVAC" /></div>
+    <div class="field"><label>Market</label><input id="nrMarket" type="text" placeholder="Billings, MT" /></div>
+    <div class="field"><label>Niche key (used as the lead's niche tag)</label><input id="nrNiche" type="text" placeholder="hvac" /></div>
+    <div class="row2"><button class="btn ghost sm" onclick="closeScrim('newRunScrim')">Cancel</button><button class="btn sm" id="nrCreate">Create run</button></div>
+  </div>
+</div>
+
+<!-- cowork brief modal -->
+<div class="scrim" id="briefScrim">
+  <div class="modal">
+    <h2>Cowork research brief</h2>
+    <p class="s">Copy this, paste it into Cowork. It will produce a CSV in the exact format the uploader expects. Then use “Upload CSV” on this run’s card.</p>
+    <textarea id="briefText" readonly></textarea>
+    <div class="row2"><button class="btn ghost sm" onclick="closeScrim('briefScrim')">Close</button><button class="btn sm" id="briefCopy">Copy brief</button></div>
+  </div>
+</div>
+
+<!-- lead detail drawer -->
+<div class="scrim" id="drawerScrim"></div>
+<div class="drawer" id="drawer"></div>
+
+<div id="toast"></div>
+<input type="file" id="csv" accept=".csv" style="display:none" />
+
+<script>
+const API_BASE = "https://fjikfftetmqtlymwgwwz.supabase.co/functions/v1";
+const QUAL_API = API_BASE + "/qual-api";
+
+let TOKEN="", DATA={rows:[],summary:{}}, RUNS=[], TAB="runs", FILTER="all", RUN_FILTER="all", SEARCH="", UPLOAD_RUN=null;
+
+function saveToken(t){ try{ sessionStorage.setItem("qualtok",t);}catch(e){} }
+function loadToken(){ try{ return sessionStorage.getItem("qualtok")||"";}catch(e){ return "";} }
+
+async function api(payload){
+  const res = await fetch(QUAL_API,{method:"POST",headers:{"Content-Type":"application/json","x-dash-token":TOKEN},body:JSON.stringify(payload)});
+  const data = await res.json().catch(()=>({error:"bad response"}));
+  if(!res.ok) throw new Error(data.error||("HTTP "+res.status));
+  return data;
+}
+function toast(m,k){ const t=document.getElementById("toast"); t.innerHTML=m; t.className="show "+(k||""); clearTimeout(t._h); t._h=setTimeout(()=>t.className="",4600); }
+function esc(s){ return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function runName(id){ const r=RUNS.find(x=>x.id===id); return r?`${r.industry} · ${r.market}`:""; }
+
+// login
+async function attempt(tok){ TOKEN=tok; await reload(); saveToken(tok); document.getElementById("gate").style.display="none"; document.getElementById("app").style.display="block"; }
+document.getElementById("login").onclick=async()=>{ const tok=document.getElementById("tok").value.trim(); const err=document.getElementById("loginErr");
+  if(!tok){err.textContent="Enter the access token.";return;} err.textContent="";
+  try{ await attempt(tok);}catch(e){ err.textContent=/unauth/i.test(e.message)?"Wrong token.":e.message; } };
+document.getElementById("tok").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("login").click(); });
+
+async function reload(){ const [l,r]=await Promise.all([api({action:"list"}),api({action:"list_runs"})]); DATA=l; RUNS=r.runs||[]; render(); }
+
+// tabs
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active")); t.classList.add("active"); TAB=t.dataset.tab;
+  document.getElementById("tab-runs").classList.toggle("hidden",TAB!=="runs"); document.getElementById("tab-leads").classList.toggle("hidden",TAB!=="leads"); });
+
+// tiles
+const TILES=[{k:"total",l:"Total"},{k:"confirmed_gaps",l:"Confirmed gaps",hot:1},{k:"queued",l:"Queued"},{k:"calling",l:"Calling"},{k:"done",l:"Done"},{k:"review",l:"Review"},{k:"skip",l:"Skip"},{k:"dnc",l:"DNC"}];
+function renderTiles(){ const s=DATA.summary||{}; document.getElementById("tiles").innerHTML=TILES.map(t=>`<div class="tile ${t.hot?'hot':''}"><div class="n">${s[t.k]??0}</div><div class="l">${t.l}</div></div>`).join(""); }
+
+// runs
+function renderRuns(){
+  const host=document.getElementById("runs");
+  const cards=RUNS.map(r=>{ const st=r.stats||{found:0,called:0,gaps:0};
+    return `<div class="run">
+      <div><h3>${esc(r.industry)}</h3><div class="mkt">${esc(r.market)}</div></div>
+      <span class="badge b-${r.status==='ready'?'done':r.status==='researching'?'calling':'queued'}">${esc(r.status)}</span>
+      <div class="rstats"><div>Found<b>${st.found}</b></div><div>Called<b>${st.called}</b></div><div class="g">Gaps<b>${st.gaps}</b></div></div>
+      <div class="ract">
+        <button class="btn tiny" onclick="research('${r.id}')">⚡ Auto-research</button>
+        <button class="btn ghost tiny" onclick="showBrief('${r.id}')">Cowork brief</button>
+        <button class="btn ghost tiny" onclick="uploadFor('${r.id}')">⬆ Upload</button>
+        <button class="btn ghost tiny" onclick="viewRun('${r.id}')">View leads</button>
+        <button class="btn ghost tiny" onclick="delRun('${r.id}','${esc(r.industry).replace(/'/g,'')}')">✕</button>
+      </div></div>`; }).join("");
+  host.innerHTML = `<div class="run newrun" onclick="openScrim('newRunScrim')">+ New industry run</div>` + cards;
+}
+
+// leads
+function renderRunFilter(){ const sel=document.getElementById("runFilter"); const cur=sel.value;
+  sel.innerHTML=`<option value="all">All runs</option><option value="none">No run</option>`+RUNS.map(r=>`<option value="${r.id}">${esc(r.industry)} · ${esc(r.market)}</option>`).join("");
+  sel.value=cur||"all"; }
+function filtered(){ let rows=DATA.rows||[];
+  if(RUN_FILTER==="none") rows=rows.filter(r=>!r.run_id); else if(RUN_FILTER!=="all") rows=rows.filter(r=>r.run_id===RUN_FILTER);
+  if(FILTER==="gaps") rows=rows.filter(r=>r.after_hours_confirmed); else if(FILTER==="dnc") rows=rows.filter(r=>r.dnc); else if(FILTER!=="all") rows=rows.filter(r=>r.status===FILTER);
+  if(SEARCH){ const q=SEARCH.toLowerCase(); rows=rows.filter(r=>(r.business_name||"").toLowerCase().includes(q)); }
+  return rows; }
+function renderRows(){ const rows=filtered(); const body=document.getElementById("rows");
+  if(!rows.length){ body.innerHTML=`<tr><td colspan="9"><div class="empty"><div class="big">No leads here yet</div>Create a run and auto-research it, or upload a CSV.</div></td></tr>`; return; }
+  body.innerHTML=rows.map(r=>{
+    const cr=r.call_result?`<span class="badge b-${r.call_result}">${r.call_result}</span>`:`<span class="gapno">—</span>`;
+    const gap=r.after_hours_confirmed?`<span class="gapyes">✓</span>`:`<span class="gapno">—</span>`;
+    const fin=(r.final_score??null)!==null?`<span class="score final">${r.final_score}</span>`:`<span class="gapno">—</span>`;
+    const st=r.dnc?`<span class="badge b-dnc">dnc</span>`:`<span class="badge b-${r.status}">${r.status}</span>`;
+    const src=`<span class="badge b-${r.source||'upload'}">${r.source||'upload'}</span>`;
+    return `<tr class="${r.after_hours_confirmed?'gap':''}" onclick="openLead('${r.id}')">
+      <td><div class="biz">${esc(r.business_name)}</div><div class="sub mono">${esc(r.phone)}</div></td>
+      <td>${esc(r.niche||"")}</td><td>${src}</td><td><span class="score">${r.desk_score??0}</span></td>
+      <td>${cr}</td><td>${gap}</td><td>${fin}</td><td>${st}</td>
+      <td class="mono" style="color:var(--muted)">${r.attempts??0}</td></tr>`; }).join("");
+}
+
+function render(){ renderTiles(); renderRuns(); renderRunFilter(); renderRows(); }
+
+// run actions
+window.research=async(id)=>{ if(!confirm("Auto-research this industry now via the API? Results are a draft — verify numbers before calling.")) return;
+  toast('<span class="spin"></span>Researching…');
+  try{ const out=await api({action:"run_research",run_id:id}); if(out.error) toast(out.error+(out.detail?": "+out.detail:""),"bad"); else toast(`Added ${out.inserted||0} leads${out.duplicates?`, ${out.duplicates} dupes`:''}. Verify before calling.`,"ok"); reload(); }
+  catch(e){ toast(e.message,"bad"); } };
+window.delRun=async(id,name)=>{ if(!confirm(`Delete run "${name}"? Its leads are kept but detached.`)) return;
+  try{ await api({action:"delete_run",id}); toast("Run deleted.","ok"); reload(); }catch(e){ toast(e.message,"bad"); } };
+window.viewRun=(id)=>{ document.querySelector('.tab[data-tab="leads"]').click(); RUN_FILTER=id; document.getElementById("runFilter").value=id; renderRows(); };
+window.uploadFor=(id)=>{ UPLOAD_RUN=id; document.getElementById("csv").click(); };
+
+// cowork brief
+function briefFor(r){ const niche=r.niche_key||r.industry.toLowerCase().replace(/[^a-z0-9]/g,"_");
+  return `Research task — Canick lead qualification.
+
+Find every ${r.industry} business in ${r.market}. For each, gather: business name, a local phone number, and website (if any).
+
+Then judge these four signals as TRUE or FALSE from what you find online:
+- emergency_trade: handles urgent / after-hours work
+- no_online_booking: no online booking or scheduling widget on their site
+- missed_call_risk: reviews mention being hard to reach, OR it's a small/solo shop
+- dated_website: site looks outdated or thin
+
+Output a CSV file with EXACTLY these columns (header row included):
+business_name,phone,niche,website,emergency_trade,no_online_booking,missed_call_risk,dated_website
+
+Set the niche column to "${niche}" for every row. Only include businesses where you found a real phone number. Save the CSV so I can download it.`; }
+window.showBrief=(id)=>{ const r=RUNS.find(x=>x.id===id); if(!r) return; document.getElementById("briefText").value=briefFor(r); openScrim("briefScrim"); };
+document.getElementById("briefCopy").onclick=()=>{ const t=document.getElementById("briefText"); t.select(); try{document.execCommand("copy");}catch(e){} navigator.clipboard&&navigator.clipboard.writeText(t.value); toast("Brief copied.","ok"); };
+
+// new run
+document.getElementById("nrCreate").onclick=async()=>{ const industry=document.getElementById("nrIndustry").value.trim(); const market=document.getElementById("nrMarket").value.trim(); const niche_key=document.getElementById("nrNiche").value.trim();
+  if(!industry||!market){ toast("Industry and market required.","bad"); return; }
+  try{ await api({action:"create_run",industry,market,niche_key}); toast("Run created.","ok"); closeScrim("newRunScrim"); ["nrIndustry","nrMarket","nrNiche"].forEach(i=>document.getElementById(i).value=""); reload(); }
+  catch(e){ toast(e.message,"bad"); } };
+
+// lead drawer
+window.openLead=async(id)=>{ const dr=document.getElementById("drawer"); dr.innerHTML=`<div class="empty"><span class="spin"></span> Loading…</div>`; dr.classList.add("show"); document.getElementById("drawerScrim").classList.add("show");
+  try{ const {lead}=await api({action:"get_lead",id}); if(!lead){ dr.innerHTML="Not found"; return; }
+    const dur=lead.duration_sec!=null?`${lead.duration_sec}s`:"—";
+    const rec=lead.recording_url?`<audio controls src="${esc(lead.recording_url)}"></audio>`:`<div class="gapno">No recording</div>`;
+    const tr=lead.transcript?`<pre class="transcript">${esc(lead.transcript)}</pre>`:`<div class="gapno">No transcript</div>`;
+    const sig=lead.desk_signals?Object.entries(lead.desk_signals).filter(([k,v])=>v).map(([k])=>k).join(", ")||"—":"—";
+    dr.innerHTML=`<div class="dhead"><div><h2>${esc(lead.business_name)}</h2><div class="mkt mono" style="color:var(--muted)">${esc(lead.phone)}</div></div><button class="x" onclick="closeLead()">✕</button></div>
+      <div class="kv">
+        <div class="k">Run</div><div class="v">${esc(runName(lead.run_id))||"—"}</div>
+        <div class="k">Niche</div><div class="v">${esc(lead.niche||"—")}</div>
+        <div class="k">Source</div><div class="v">${esc(lead.source||"upload")}</div>
+        <div class="k">Desk score</div><div class="v mono">${lead.desk_score??0}</div>
+        <div class="k">Signals</div><div class="v">${esc(sig)}</div>
+        <div class="k">Call result</div><div class="v">${lead.call_result?`<span class="badge b-${lead.call_result}">${lead.call_result}</span>`:"—"}</div>
+        <div class="k">After-hours gap</div><div class="v">${lead.after_hours_confirmed?'<span class="gapyes">✓ confirmed</span>':"—"}</div>
+        <div class="k">Final score</div><div class="v mono" style="color:var(--accent)">${lead.final_score??"—"}</div>
+        <div class="k">Status</div><div class="v"><span class="badge b-${lead.dnc?'dnc':lead.status}">${lead.dnc?'dnc':lead.status}</span></div>
+        <div class="k">Attempts</div><div class="v mono">${lead.attempts??0}</div>
+        <div class="k">Duration</div><div class="v mono">${dur}</div>
+        <div class="k">Disconnect</div><div class="v mono">${esc(lead.disconnect_reason||"—")}</div>
+      </div>
+      ${lead.call_summary?`<div class="sec">Summary</div><div style="font-size:13.5px;color:#cdd7e3">${esc(lead.call_summary)}</div>`:""}
+      <div class="sec">Recording</div>${rec}
+      <div class="sec">Transcript</div>${tr}
+      <div class="row2" style="justify-content:flex-start;margin-top:22px">
+        <button class="btn ghost sm" onclick="toggleDnc('${lead.id}',${lead.dnc?1:0})">${lead.dnc?'Remove DNC':'Mark DNC'}</button>
+        <button class="btn ghost sm" onclick="del('${lead.id}','${esc(lead.business_name).replace(/'/g,'')}')">Delete lead</button>
+      </div>`;
+  }catch(e){ dr.innerHTML=`<div class="empty">${esc(e.message)}</div>`; } };
+window.closeLead=()=>{ document.getElementById("drawer").classList.remove("show"); document.getElementById("drawerScrim").classList.remove("show"); };
+document.getElementById("drawerScrim").onclick=closeLead;
+
+window.toggleDnc=async(id,isDnc)=>{ try{ await api({action:"set_dnc",id,dnc:!isDnc}); toast("Updated.","ok"); closeLead(); reload(); }catch(e){ toast(e.message,"bad"); } };
+window.del=async(id,name)=>{ if(!confirm(`Delete "${name}"?`)) return; try{ await api({action:"delete",id}); toast("Deleted.","ok"); closeLead(); reload(); }catch(e){ toast(e.message,"bad"); } };
+
+// upload
+document.getElementById("uploadGlobal").onclick=()=>{ UPLOAD_RUN=null; document.getElementById("csv").click(); };
+document.getElementById("csv").onchange=(e)=>{ const f=e.target.files[0]; if(!f) return; const reader=new FileReader();
+  reader.onload=async()=>{ toast('<span class="spin"></span>Uploading…');
+    try{ const out=await api({action:"upload",csv:reader.result,run_id:UPLOAD_RUN}); const sk=(out.skipped&&out.skipped.length)||0;
+      toast(`Loaded · ${out.inserted||0} new, ${out.updated||0} updated${sk?`, ${sk} skipped`:''}.`,"ok"); reload(); }
+    catch(err){ toast(err.message,"bad"); } };
+  reader.readAsText(f); e.target.value=""; };
+
+// dispatch
+document.getElementById("runBtn").onclick=async()=>{ if(!confirm("Place real outbound calls now to all eligible queued leads (score ≥ 5)? Bypasses the time window.")) return;
+  toast('<span class="spin"></span>Dispatching…');
+  try{ const out=await api({action:"dispatch_now"}); if(out.skipped) toast(`Nothing dispatched: ${out.reason}`,"bad"); else toast(`Dispatched ${out.dispatched||0} call(s).`,"ok"); setTimeout(reload,1500); }
+  catch(e){ toast(e.message,"bad"); } };
+document.getElementById("refreshBtn").onclick=reload;
+
+// filters
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{ document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active")); c.classList.add("active"); FILTER=c.dataset.f; renderRows(); });
+document.getElementById("search").oninput=(e)=>{ SEARCH=e.target.value; renderRows(); };
+document.getElementById("runFilter").onchange=(e)=>{ RUN_FILTER=e.target.value; renderRows(); };
+
+// scrims
+window.openScrim=(id)=>document.getElementById(id).classList.add("show");
+window.closeScrim=(id)=>document.getElementById(id).classList.remove("show");
+document.querySelectorAll(".scrim").forEach(s=>{ if(s.id==="drawerScrim") return; s.onclick=(e)=>{ if(e.target===s) s.classList.remove("show"); }; });
+
+// auto-login
+(async()=>{ const t=loadToken(); if(t){ try{ await attempt(t); }catch(e){} } })();
+</script>
+</body>
+</html>

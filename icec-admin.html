@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICEC Admin — Canick</title>
+<style>
+:root {
+  --bg: #0e1116;
+  --panel: #161b22;
+  --panel-2: #1c2330;
+  --border: #2a3340;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #ff7a1a;
+  --accent-2: #ffa15c;
+  --good: #2ea043;
+  --warn: #d29922;
+  --bad: #f85149;
+  --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; }
+a { color: var(--accent-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Login */
+.login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.login-box { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px 32px; width: 340px; text-align: center; }
+.login-box .brand { font-size: 13px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+.login-box h1 { font-size: 20px; margin-bottom: 18px; }
+.login-box input { width: 100%; padding: 10px 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; margin-bottom: 12px; }
+.login-box input:focus { outline: none; border-color: var(--accent); }
+.login-box button { width: 100%; padding: 10px; background: var(--accent); color: #11161d; border: 0; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.login-box button:hover { background: var(--accent-2); }
+.login-box .err { color: var(--bad); font-size: 13px; margin-top: 8px; }
+
+/* Main layout */
+.hidden { display: none !important; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+header .left .brand { font-size: 12px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; font-weight: 700; }
+header h1 { font-size: 22px; margin-top: 2px; }
+header .right { display: flex; gap: 10px; align-items: center; }
+.btn-sm { padding: 6px 14px; border-radius: 8px; font-size: 13px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+.btn-sm:hover { color: var(--text); border-color: var(--accent); }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.stat-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.stat-card .val { font-size: 26px; font-weight: 800; margin-top: 2px; }
+.stat-card .val.good { color: var(--good); }
+.stat-card .val.warn { color: var(--warn); }
+.stat-card .val.bad { color: var(--bad); }
+@media (max-width: 640px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+/* Table */
+.table-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 10px 14px; background: var(--panel-2); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+tr:hover td { background: rgba(255,122,26,0.04); }
+.pts-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.pts-badge.good { background: rgba(46,160,67,0.15); color: var(--good); }
+.pts-badge.warn { background: rgba(210,153,34,0.15); color: var(--warn); }
+.pts-badge.bad { background: rgba(248,81,73,0.15); color: var(--bad); }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.status-dot.new { background: var(--accent); }
+.status-dot.reviewed { background: var(--good); }
+.clickable { cursor: pointer; }
+
+/* Detail panel */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; justify-content: flex-end; }
+.detail-panel { width: 560px; max-width: 100vw; background: var(--bg); border-left: 1px solid var(--border); height: 100vh; overflow-y: auto; padding: 28px 24px; }
+.detail-panel .close-btn { float: right; background: none; border: 0; color: var(--muted); font-size: 22px; cursor: pointer; padding: 4px 8px; }
+.detail-panel .close-btn:hover { color: var(--text); }
+.detail-panel h2 { font-size: 20px; margin-bottom: 4px; }
+.detail-panel .meta { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+.detail-section { margin-bottom: 18px; }
+.detail-section h3 { font-size: 14px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.detail-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+.detail-row .dl { color: var(--muted); }
+.detail-row .dv { text-align: right; max-width: 60%; }
+.doc-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.doc-item:last-child { border-bottom: 0; }
+.doc-item .doc-pts { font-weight: 700; color: var(--accent); margin-left: 8px; }
+.doc-item .file-link { color: var(--accent-2); font-size: 12px; margin-left: 8px; }
+.notes-block { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text); white-space: pre-wrap; }
+.mark-reviewed { margin-top: 16px; width: 100%; padding: 10px; background: var(--good); color: #fff; border: 0; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.mark-reviewed:hover { opacity: 0.9; }
+.mark-reviewed.done { background: var(--panel-2); color: var(--muted); cursor: default; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state h2 { color: var(--text); margin-bottom: 8px; }
+
+.loading { text-align: center; padding: 60px; color: var(--muted); }
+.spinner-lg { display: inline-block; width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-box">
+    <div class="brand">Canick</div>
+    <h1>ICEC Admin</h1>
+    <input type="password" id="pwInput" placeholder="Password" autofocus>
+    <button onclick="tryLogin()">Enter</button>
+    <div class="err hidden" id="loginErr">Incorrect password</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="wrap hidden" id="mainScreen">
+  <header>
+    <div class="left">
+      <div class="brand">Canick</div>
+      <h1>ICEC Applications</h1>
+    </div>
+    <div class="right">
+      <button class="btn-sm" onclick="loadApplications()">Refresh</button>
+      <button class="btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card"><div class="label">Total</div><div class="val" id="statTotal">—</div></div>
+    <div class="stat-card"><div class="label">New</div><div class="val warn" id="statNew">—</div></div>
+    <div class="stat-card"><div class="label">Reviewed</div><div class="val good" id="statReviewed">—</div></div>
+    <div class="stat-card"><div class="label">Avg Points</div><div class="val" id="statAvgPts">—</div></div>
+  </div>
+
+  <div id="content">
+    <div class="loading"><div class="spinner-lg"></div><p style="margin-top:12px;">Loading applications...</p></div>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="overlay hidden" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detailPanel" onclick="event.stopPropagation()">
+    <button class="close-btn" onclick="closeDetail()">&times;</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+const SUPABASE_URL = 'https://fjikfftetmqtlymwgwwz.supabase.co';
+const ICEC_PDF_URL = 'https://fjikfftetmqtlymwgwwz.supabase.co/storage/v1/object/public/icec-templates/ICEC-Application.pdf';const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqaWtmZnRldG1xdGx5bXdnd3d6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NTU0NjAsImV4cCI6MjA5MjAzMTQ2MH0.genBzshp16TOWCIdlSsrUYQKkOnIEx4pOQv3PkVQrJY';
+const PASSWORD = 'icec2026';
+
+let apps = [];
+
+function tryLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === PASSWORD) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('mainScreen').classList.remove('hidden');
+    loadApplications();
+  } else {
+    document.getElementById('loginErr').classList.remove('hidden');
+  }
+}
+document.getElementById('pwInput').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+function logout() {
+  document.getElementById('mainScreen').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('pwInput').value = '';
+  document.getElementById('loginErr').classList.add('hidden');
+}
+
+async function supaFetch(path, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...opts.headers,
+    },
+    method: opts.method || 'GET',
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  return res.json();
+}
+
+async function loadApplications() {
+  document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner-lg"></div><p style="margin-top:12px;">Loading applications...</p></div>';
+
+  try {
+    apps = await supaFetch('icec_applications?order=created_at.desc');
+    if (!Array.isArray(apps)) { apps = []; }
+    renderStats();
+    renderTable();
+  } catch (err) {
+    document.getElementById('content').innerHTML = `<div class="empty-state"><h2>Error loading</h2><p>${err.message}</p></div>`;
+  }
+}
+
+function renderStats() {
+  const total = apps.length;
+  const reviewed = apps.filter(a => a.status === 'reviewed').length;
+  const newCount = total - reviewed;
+  const avgPts = total > 0 ? (apps.reduce((s, a) => s + (a.total_points || 0), 0) / total).toFixed(1) : '—';
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statNew').textContent = newCount;
+  document.getElementById('statReviewed').textContent = reviewed;
+  document.getElementById('statAvgPts').textContent = avgPts;
+}
+
+function renderTable() {
+  if (apps.length === 0) {
+    document.getElementById('content').innerHTML = '<div class="empty-state"><h2>No applications yet</h2><p>Submissions from canick.co/icec will appear here.</p></div>';
+    return;
+  }
+
+  let html = `<div class="table-wrap"><table>
+    <tr><th>Status</th><th>Name</th><th>Business</th><th>Occupations</th><th>Points</th><th>Files</th><th>Submitted</th></tr>`;
+
+  apps.forEach((a, i) => {
+    const status = a.status || 'new';
+    const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+    const name = `${a.first_name || ''} ${a.last_name || ''}`.trim();
+    const occs = Array.isArray(a.occupations) ? a.occupations.join(', ') : '—';
+    const pts = a.total_points || 0;
+    const ptsClass = pts >= 15 ? 'good' : pts >= 9 ? 'warn' : 'bad';
+    const docs = Array.isArray(a.documents_checked) ? a.documents_checked.filter(d => d.has_file).length : 0;
+    const date = a.created_at ? new Date(a.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+    html += `<tr class="clickable" onclick="openDetail(${i})">
+      <td><span class="status-dot ${status}"></span>${statusLabel}</td>
+      <td><strong>${esc(name)}</strong></td>
+      <td>${esc(a.business_name || '—')}</td>
+      <td>${esc(occs)}</td>
+      <td><span class="pts-badge ${ptsClass}">${pts} pts</span></td>
+      <td>${docs}</td>
+      <td>${date}</td>
+    </tr>`;
+  });
+
+  html += '</table></div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+async function openDetail(index) {
+  const a = apps[index];
+  const name = `${a.first_name || ''} ${a.middle_initial ? a.middle_initial + '. ' : ''}${a.last_name || ''}`.trim();
+  const date = a.created_at ? new Date(a.created_at).toLocaleString() : '—';
+
+  // Load files for this application
+  let files = [];
+  try {
+    files = await supaFetch(`icec_application_files?application_id=eq.${a.id}`);
+    if (!Array.isArray(files)) files = [];
+  } catch (e) { console.error('Files load error:', e); }
+
+  const docs = Array.isArray(a.documents_checked) ? a.documents_checked : [];
+
+  let html = `
+    <h2>${esc(name)}</h2>
+    <div class="meta">Submitted ${date} &bull; ID: ${a.id || '—'}</div>
+
+    <div class="detail-section">
+      <h3>Applicant</h3>
+      <div class="detail-row"><span class="dl">SSN</span><span class="dv">${esc(a.ssn || '—')}</span></div>
+      <div class="detail-row"><span class="dl">18+ Confirmed</span><span class="dv">${esc(a.dob_confirm || '—')}</span></div>
+      <div class="detail-row"><span class="dl">Phone</span><span class="dv">${esc(a.phone || '—')}</span></div>
+      <div class="detail-row"><span class="dl">Email</span><span class="dv"><a href="mailto:${esc(a.email)}">${esc(a.email || '—')}</a></span></div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Business</h3>
+      <div class="detail-row"><span class="dl">Name</span><span class="dv">${esc(a.business_name || '—')}</span></div>
+      <div class="detail-row"><span class="dl">Structure</span><span class="dv">${esc(a.business_structure || '—')}</span></div>
+      ${a.officer_title ? `<div class="detail-row"><span class="dl">Officer Title</span><span class="dv">${esc(a.officer_title)}</span></div>` : ''}
+      ${a.ownership_declaration ? `<div class="detail-row"><span class="dl">Ownership</span><span class="dv">${esc(a.ownership_declaration)}</span></div>` : ''}
+      <div class="detail-row"><span class="dl">Mailing</span><span class="dv">${esc(a.mailing_street || '')} ${esc(a.mailing_city || '')}, ${esc(a.mailing_state || '')} ${esc(a.mailing_zip || '')}</span></div>
+      <div class="detail-row"><span class="dl">Physical</span><span class="dv">${esc(a.physical_street || '')} ${esc(a.physical_city || '')}, ${esc(a.physical_state || '')} ${esc(a.physical_zip || '')}</span></div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Occupations</h3>
+      ${Array.isArray(a.occupations) ? a.occupations.map(o => `<div style="padding:3px 0;font-size:13px;">• ${esc(o)}</div>`).join('') : '<div style="font-size:13px;color:var(--muted)">—</div>'}
+    </div>
+
+    <div class="detail-section">
+      <h3>Documents — ${a.total_points || 0} Points</h3>
+      ${docs.length === 0 ? '<div style="font-size:13px;color:var(--muted)">No documents checked</div>' : docs.map(d => {
+        const docFiles = files.filter(f => f.doc_id === d.doc_id);
+        const fileLinks = docFiles.map(f => `<a class="file-link" href="${SUPABASE_URL}/storage/v1/object/public/icec-documents/${f.storage_path}" target="_blank">📄 ${esc(f.file_name)}</a>`).join(' ');
+        return `<div class="doc-item">
+          <div>${esc(d.label)}${fileLinks}</div>
+          <span class="doc-pts">${d.points} pts</span>
+        </div>`;
+      }).join('')}
+    </div>
+
+    ${a.notes ? `<div class="detail-section"><h3>Notes</h3><div class="notes-block">${esc(a.notes)}</div></div>` : ''}
+
+    <div class="detail-section">
+      <h3>Confirmations</h3>
+      <div class="detail-row"><span class="dl">Accuracy confirmed</span><span class="dv">${a.confirm_accurate ? '✓ Yes' : '✗ No'}</span></div>
+      <div class="detail-row"><span class="dl">Waiver understood</span><span class="dv">${a.confirm_waiver ? '✓ Yes' : '✗ No'}</span></div>
+    </div>
+
+    <button class="mark-reviewed ${a.status === 'reviewed' ? 'done' : ''}" onclick="markReviewed('${a.id}', ${index})" ${a.status === 'reviewed' ? 'disabled' : ''}>
+      ${a.status === 'reviewed' ? '✓ Reviewed' : 'Mark as Reviewed'}
+    </button>
+    <button class="mark-reviewed" style="background:var(--accent);color:#11161d;margin-top:8px;" onclick="generatePDF(${index})">
+      📄 Generate Official Application PDF
+    </button>
+  `;
+
+  document.getElementById('detailContent').innerHTML = html;
+  document.getElementById('detailOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail(event) {
+  if (event && event.target !== document.getElementById('detailOverlay')) return;
+  document.getElementById('detailOverlay').classList.remove('hidden');
+  document.getElementById('detailOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+async function markReviewed(id, index) {
+  try {
+    await supaFetch(`icec_applications?id=eq.${id}`, {
+      method: 'PATCH',
+      body: { status: 'reviewed' },
+    });
+    apps[index].status = 'reviewed';
+    renderStats();
+    renderTable();
+    openDetail(index);
+  } catch (err) {
+    alert('Failed to update: ' + err.message);
+  }
+}
+
+async function generatePDF(index) {
+  const a = apps[index];
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+
+  try {
+    // Fetch the official ICEC PDF template
+    const pdfBytes = await fetch(ICEC_PDF_URL).then(r => r.arrayBuffer());
+    const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+    const form = pdfDoc.getForm();
+
+    // Page 1 - Application text fields
+    const fieldMap = {
+      'untitled1': a.first_name || '',
+      'untitled2': a.middle_initial || '',
+      'untitled3': a.last_name || '',
+      'untitled4': a.ssn || '',
+      'untitled5': a.business_name || '',
+      'untitled6': a.mailing_street || '',
+      'untitled7': a.mailing_city || '',
+      'untitled8': a.mailing_state || '',
+      'untitled9': a.mailing_zip || '',
+      'untitled10': a.physical_street || '',
+      'untitled11': a.physical_city || '',
+      'untitled12': a.physical_state || '',
+      'untitled13': a.physical_zip || '',
+      'untitled14': a.phone || '',
+      'untitled15': a.email || '',
+    };
+
+    // Occupations
+    const occs = Array.isArray(a.occupations) ? a.occupations : [];
+    fieldMap['Text 1'] = occs.slice(0, 3).join(', ');
+    fieldMap['Text 2'] = occs.slice(3).join(', ');
+
+    // Page 2 - Waiver (same name/SSN fields)
+    fieldMap['untitled31'] = a.first_name || '';
+    fieldMap['untitled32'] = a.middle_initial || '';
+    fieldMap['untitled33'] = a.last_name || '';
+    fieldMap['untitled34'] = a.ssn || '';
+
+    // Fill text fields
+    for (const [fieldId, value] of Object.entries(fieldMap)) {
+      try {
+        const field = form.getTextField(fieldId);
+        field.setText(value);
+        field.setFontSize(9);
+      } catch (e) { /* field may not exist */ }
+    }
+
+    // Business structure checkboxes
+    const checkboxMap = {
+      'untitled20': 'Sole Proprietor',
+      'untitled21': 'Partnership or LLP',
+      'untitled22': 'Member-Managed LLC',
+      'untitled23': 'Manager-Managed LLC (construction)',
+      'untitled24': 'Manager-Managed LLC (non-construction)',
+      'untitled25': 'Corporation (construction)',
+      'untitled26': 'Corporation (non-construction)',
+    };
+    const titleMap = {
+      'untitled27': 'President',
+      'untitled28': 'Vice President',
+      'untitled29': 'Secretary',
+      'untitled30': 'Treasurer',
+    };
+
+    for (const [cbId, cbValue] of Object.entries(checkboxMap)) {
+      try {
+        const cb = form.getCheckBox(cbId);
+        if (a.business_structure === cbValue) cb.check();
+      } catch (e) { }
+    }
+    for (const [cbId, cbValue] of Object.entries(titleMap)) {
+      try {
+        const cb = form.getCheckBox(cbId);
+        if (a.officer_title === cbValue) cb.check();
+      } catch (e) { }
+    }
+
+    // Flatten so it prints cleanly
+    form.flatten();
+
+    const filledBytes = await pdfDoc.save();
+    const blob = new Blob([filledBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `ICEC-Application-${(a.last_name || 'unknown').replace(/\s/g,'_')}-${(a.first_name || '').replace(/\s/g,'_')}.pdf`;
+    link.click();
+    URL.revokeObjectURL(url);
+
+    btn.disabled = false;
+    btn.textContent = '📄 Generate Official Application PDF';
+  } catch (err) {
+    alert('PDF generation failed: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = '📄 Generate Official Application PDF';
+  }
+}
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
