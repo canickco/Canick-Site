@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canick Collect™ — AI Delinquency Recovery for Self-Storage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0F1C2E;
+  --navy-mid: #1B2A4A;
+  --navy-light: #243560;
+  --copper: #A0714F;
+  --copper-light: #C49A6C;
+  --copper-bright: #E8B87A;
+  --cream: #FAF7F2;
+  --mid: #8A9BB0;
+  --border: rgba(160,113,79,0.25);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--navy); color: var(--cream); overflow-x: hidden; }
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1000; opacity: 0.6;
+}
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px; height: 72px; display: flex; align-items: center; justify-content: space-between; background: rgba(15,28,46,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-logo { text-decoration: none; }
+.nav-logo img { height: 38px; width: auto; display: block; }
+.nav-links { display: flex; gap: 36px; align-items: center; list-style: none; }
+.nav-links a { font-size: 13px; font-weight: 500; color: var(--mid); text-decoration: none; letter-spacing: 0.5px; transition: color 0.2s; }
+.nav-links a:hover { color: var(--copper-light); }
+.nav-cta { padding: 9px 22px; background: transparent; border: 1px solid var(--copper); border-radius: 3px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; color: var(--copper-light) !important; cursor: pointer; transition: all 0.2s; }
+.nav-cta:hover { background: var(--copper); color: var(--navy) !important; }
+
+/* HERO */
+.hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 140px 48px 80px; }
+.hero::before { content: ''; position: absolute; top: -200px; right: -100px; width: 900px; height: 900px; border-radius: 50%; background: radial-gradient(circle, rgba(200,38,38,0.05) 0%, transparent 65%); pointer-events: none; }
+.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(160,113,79,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(160,113,79,0.04) 1px, transparent 1px); background-size: 80px 80px; pointer-events: none; }
+.hero-content { position: relative; z-index: 2; max-width: 680px; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--copper); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+.hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--copper); }
+.hero-h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 7vw, 88px); font-weight: 600; line-height: 1.0; color: var(--cream); margin-bottom: 8px; opacity: 0; animation: fadeUp 0.8s ease 0.35s forwards; }
+.hero-h1 em { font-style: italic; color: var(--copper-bright); }
+.hero-h1-sub { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4.5vw, 60px); font-weight: 400; line-height: 1.15; color: var(--mid); margin-bottom: 36px; opacity: 0; animation: fadeUp 0.8s ease 0.45s forwards; }
+.hero-body { font-size: 18px; font-weight: 300; color: var(--mid); line-height: 1.7; max-width: 540px; margin-bottom: 48px; opacity: 0; animation: fadeUp 0.8s ease 0.55s forwards; }
+.hero-body strong { color: var(--cream); font-weight: 500; }
+.hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s ease 0.65s forwards; }
+.btn-primary { padding: 14px 32px; background: var(--copper); color: var(--navy); border: none; border-radius: 3px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.2s; display: inline-block; }
+.btn-primary:hover { background: var(--copper-bright); transform: translateY(-1px); }
+.btn-secondary { padding: 14px 32px; background: transparent; color: var(--copper-light); border: 1px solid var(--border); border-radius: 3px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.2s; display: inline-block; }
+.btn-secondary:hover { border-color: var(--copper); color: var(--copper-bright); }
+.hero-screenshot { position: absolute; right: 48px; top: 50%; transform: translateY(-50%) rotate(2deg); width: 500px; z-index: 2; opacity: 0; animation: fadeIn 1.2s ease 0.8s forwards; border-radius: 10px; overflow: hidden; border: 1px solid rgba(160,113,79,0.3); box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(160,113,79,0.1); }
+.hero-screenshot img { width: 100%; height: auto; display: block; }
+
+/* SHARED */
+.section-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--copper); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.section-eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--copper); }
+.section-h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 4.5vw, 56px); font-weight: 600; color: var(--cream); line-height: 1.1; margin-bottom: 20px; }
+.section-h2 em { color: var(--copper-bright); font-style: italic; }
+.section-sub { font-size: 16px; font-weight: 300; color: var(--mid); line-height: 1.7; max-width: 580px; margin-bottom: 56px; }
+
+/* STATS STRIP */
+.stats-strip { background: var(--navy-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stats-inner { max-width: 1280px; margin: 0 auto; padding: 48px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.stat-item { padding: 0 36px; border-right: 1px solid var(--border); text-align: center; }
+.stat-item:first-child { padding-left: 0; }
+.stat-item:last-child { border-right: none; }
+.stat-num { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 700; color: var(--copper-bright); line-height: 1; margin-bottom: 8px; }
+.stat-label { font-size: 13px; color: var(--mid); font-weight: 300; line-height: 1.4; }
+
+/* PROBLEM */
+.problem-strip { background: var(--navy); padding: 100px 48px; }
+.problem-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; }
+.problem-item { padding: 0 40px; border-right: 1px solid var(--border); }
+.problem-item:first-child { padding-left: 0; }
+.problem-item:last-child { border-right: none; }
+.problem-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+.problem-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--cream); margin-bottom: 10px; }
+.problem-text { font-size: 14px; color: var(--mid); line-height: 1.6; font-weight: 300; }
+
+/* SCREENSHOTS */
+.screenshots-section { background: var(--navy-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 100px 48px; }
+.screenshots-inner { max-width: 1280px; margin: 0 auto; }
+.screenshots-tabs { display: flex; gap: 4px; margin-top: 48px; border-bottom: 1px solid var(--border); }
+.screenshot-tab { padding: 10px 24px; font-size: 13px; font-weight: 600; color: var(--mid); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'Outfit', sans-serif; }
+.screenshot-tab:hover { color: var(--copper-light); }
+.screenshot-tab.active { color: var(--copper-bright); border-bottom-color: var(--copper); }
+.screenshot-panel { display: none; }
+.screenshot-panel.active { display: block; }
+.screenshot-frame { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.5); margin-top: 24px; }
+.screenshot-frame img { width: 100%; height: auto; display: block; }
+.screenshot-caption { margin-top: 16px; font-size: 13px; color: var(--mid); font-family: 'Space Mono', monospace; letter-spacing: 0.5px; }
+
+/* CADENCE */
+.cadence-section { background: var(--navy); padding: 100px 48px; }
+.cadence-inner { max-width: 1280px; margin: 0 auto; }
+.cadence-steps { margin-top: 56px; position: relative; }
+.cadence-steps::before { content: ''; position: absolute; left: 28px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--copper), rgba(160,113,79,0.2)); }
+.cadence-step { display: flex; gap: 32px; margin-bottom: 16px; position: relative; align-items: flex-start; }
+.cadence-marker { width: 56px; height: 56px; min-width: 56px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 10px; z-index: 2; letter-spacing: 1px; }
+.cadence-marker.active { border: 1px solid var(--copper); background: rgba(160,113,79,0.1); color: var(--copper-bright); }
+.cadence-marker.danger { border: 1px solid rgba(200,38,38,0.5); background: rgba(200,38,38,0.08); color: rgba(200,38,38,0.8); }
+.cadence-content { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; padding: 24px 28px; flex: 1; }
+.cadence-content h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: var(--cream); margin-bottom: 8px; }
+.cadence-content p { font-size: 14px; color: var(--mid); line-height: 1.6; font-weight: 300; margin-bottom: 14px; }
+.cadence-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.cadence-tag { padding: 4px 10px; border: 1px solid var(--border); border-radius: 2px; font-size: 11px; color: var(--copper-light); font-family: 'Space Mono', monospace; }
+.cadence-tag.manual { color: rgba(200,38,38,0.7); border-color: rgba(200,38,38,0.2); }
+
+/* COMPLIANCE */
+.compliance-section { background: var(--navy-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 100px 48px; }
+.compliance-inner { max-width: 1280px; margin: 0 auto; }
+.compliance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 56px; }
+.compliance-card { background: var(--navy); border: 1px solid var(--border); border-radius: 4px; padding: 28px; }
+.compliance-check { width: 32px; height: 32px; border-radius: 6px; background: rgba(21,128,61,0.1); border: 1px solid rgba(21,128,61,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 16px; }
+.compliance-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--cream); margin-bottom: 10px; }
+.compliance-text { font-size: 13px; color: var(--mid); line-height: 1.6; font-weight: 300; }
+.compliance-banner { margin-top: 32px; background: var(--navy); border: 1px solid var(--border); border-left: 3px solid var(--copper); border-radius: 4px; padding: 28px 32px; display: flex; align-items: center; gap: 20px; }
+.compliance-banner-icon { font-size: 28px; flex-shrink: 0; }
+.compliance-banner-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
+.compliance-banner-text { font-size: 14px; color: var(--mid); font-weight: 300; line-height: 1.6; }
+
+/* FEATURES */
+.features-section { background: var(--navy); padding: 100px 48px; }
+.features-inner { max-width: 1280px; margin: 0 auto; }
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); margin-top: 56px; }
+.feature-card { background: var(--navy); padding: 48px; position: relative; overflow: hidden; transition: background 0.3s; }
+.feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--copper); transition: height 0.4s ease; }
+.feature-card:hover { background: var(--navy-mid); }
+.feature-card:hover::before { height: 100%; }
+.feature-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--copper); letter-spacing: 1px; margin-bottom: 24px; display: block; }
+.feature-icon { font-size: 32px; margin-bottom: 20px; display: block; }
+.feature-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--cream); margin-bottom: 14px; }
+.feature-text { font-size: 14px; color: var(--mid); line-height: 1.7; font-weight: 300; margin-bottom: 24px; }
+.feature-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.feature-tag { padding: 4px 10px; border: 1px solid var(--border); border-radius: 2px; font-size: 11px; color: var(--mid); font-family: 'Space Mono', monospace; }
+
+/* PRICING */
+.pricing-section { background: var(--navy-mid); border-top: 1px solid var(--border); padding: 100px 48px; }
+.pricing-inner { max-width: 900px; margin: 0 auto; }
+.pricing-card { background: var(--navy); border: 1px solid var(--border); border-top: 3px solid var(--copper); border-radius: 4px; padding: 56px; margin-top: 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+.price-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--copper); letter-spacing: 2px; text-transform: uppercase; }
+.price-amount { font-family: 'Cormorant Garamond', serif; font-size: 56px; font-weight: 700; color: var(--copper-bright); line-height: 1; }
+.price-note { font-size: 13px; color: var(--mid); font-weight: 300; margin-bottom: 32px; }
+.price-divider { width: 100%; height: 1px; background: var(--border); margin: 24px 0; }
+.price-includes-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--mid); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+.price-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: rgba(250,247,242,0.7); line-height: 1.5; margin-bottom: 10px; }
+.price-feature::before { content: '→'; color: var(--copper); flex-shrink: 0; font-size: 11px; margin-top: 2px; }
+.price-right-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: var(--cream); line-height: 1.2; margin-bottom: 16px; }
+.price-right-title em { font-style: italic; color: var(--copper-bright); }
+.price-right-text { font-size: 14px; color: var(--mid); line-height: 1.7; font-weight: 300; margin-bottom: 24px; }
+
+/* CTA */
+.cta-section { background: var(--navy); border-top: 1px solid var(--border); text-align: center; }
+.cta-inner { max-width: 800px; margin: 0 auto; padding: 100px 48px; }
+.cta-inner .section-eyebrow { justify-content: center; }
+.cta-inner .section-eyebrow::before { display: none; }
+.cta-h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 5vw, 64px); font-weight: 600; color: var(--cream); line-height: 1.1; margin-bottom: 20px; }
+.cta-h2 em { color: var(--copper-bright); font-style: italic; }
+.cta-sub { font-size: 16px; color: var(--mid); font-weight: 300; line-height: 1.7; margin-bottom: 48px; }
+.cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* FOOTER */
+footer { background: var(--navy); border-top: 1px solid var(--border); padding: 32px 48px; display: flex; align-items: center; justify-content: space-between; }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: var(--copper); letter-spacing: 2px; text-transform: uppercase; }
+.footer-center { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.footer-text { font-size: 12px; color: var(--mid); font-family: 'Space Mono', monospace; }
+.footer-legal { display: flex; gap: 20px; align-items: center; }
+.footer-legal a { font-size: 11px; color: var(--mid); font-family: 'Space Mono', monospace; text-decoration: none; transition: color 0.2s; }
+.footer-legal a:hover { color: var(--copper-light); }
+.footer-legal span { color: rgba(160,113,79,0.4); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.reveal { opacity:0; transform:translateY(24px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .hero-screenshot { display: none; }
+  .features-grid, .compliance-grid { grid-template-columns: 1fr; }
+  .pricing-card { grid-template-columns: 1fr; gap: 32px; }
+  .problem-inner { grid-template-columns: 1fr; gap: 40px; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .problem-item { padding: 0; border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 32px; }
+  .problem-item:last-child { border-bottom: none; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { gap: 16px; }
+  .nav-links li:not(:last-child):not(:nth-last-child(2)) { display: none; }
+  .hero, .features-section, .pricing-section, .problem-strip, .compliance-section, .cadence-section { padding: 60px 20px; }
+  .hero { padding-top: 120px; }
+  .pricing-card { padding: 32px 24px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo"><img src="Canick-Copper.png" alt="Canick"></a>
+  <ul class="nav-links">
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#products">Products</a></li>
+    <li><a href="/air">AIR™</a></li>
+    <li><a href="/jobtrax">JobTrax™</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="tel:4066066088" class="nav-cta">Call Jim</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Canick Collect™ · AI Collections Agent</div>
+    <h1 class="hero-h1">Stop losing revenue<br>to <em>unpaid rent.</em></h1>
+    <div class="hero-h1-sub">AI calls your delinquent tenants.<br>You keep every dollar recovered.</div>
+    <p class="hero-body">
+      <strong>Canick Collect™ is an AI voice agent</strong> that calls delinquent tenants on your behalf — professionally, consistently, and fully compliant. No collection agency cut. No manual follow-up. Flat monthly fee regardless of volume.
+    </p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">Get Canick Collect™</a>
+      <a href="mailto:jim@canick.co" class="btn-secondary">Talk to Jim</a>
+    </div>
+  </div>
+  <div class="hero-screenshot">
+    <img src="collect-screen-dashboard.png" alt="Canick Collect delinquency dashboard">
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-num">25%</div>
+      <div class="stat-label">Collection agencies take 25–50% of every dollar they recover. You keep none of it.</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Collect works around the clock within legal call windows — no manual scheduling required.</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num">$0</div>
+      <div class="stat-label">Per-recovery fees. Flat monthly rate. Every dollar recovered goes back to you.</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Of calls logged, recorded, and transcribed. Complete audit trail on every account.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<div class="problem-strip">
+  <div class="problem-inner">
+    <div class="problem-item reveal">
+      <span class="problem-icon">📋</span>
+      <div class="problem-title">Manual follow-up never happens.</div>
+      <p class="problem-text">Site managers are busy showing units, handling move-ins, fielding calls. Collection calls get pushed to tomorrow — every single day — until accounts hit 60+ days and it's too late.</p>
+    </div>
+    <div class="problem-item reveal">
+      <span class="problem-icon">💸</span>
+      <div class="problem-title">Agencies take a 25–50% cut.</div>
+      <p class="problem-text">Third-party collection agencies charge a percentage of everything they recover. On a $200 storage unit that's $50–$100 per recovery. Multiply that across your delinquent accounts and it adds up fast.</p>
+    </div>
+    <div class="problem-item reveal">
+      <span class="problem-icon">🤖</span>
+      <div class="problem-title">Robocalls get ignored.</div>
+      <p class="problem-text">Pre-recorded messages feel impersonal. Tenants screen them, ignore them, and delete them. Collect is a real conversation — tenants can ask questions, explain situations, and make payment commitments.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCREENSHOTS -->
+<div class="screenshots-section" id="screenshots">
+  <div class="screenshots-inner">
+    <div class="section-eyebrow reveal">See It In Action</div>
+    <h2 class="section-h2 reveal">A real look at<br><em>Collect in production.</em></h2>
+    <p class="section-sub reveal">Live delinquency queue, full call transcripts with AI summaries, and your complete collection cadence — all in one dashboard.</p>
+    <div class="screenshots-tabs">
+      <button class="screenshot-tab active" onclick="showTab('dashboard', this)">Account Dashboard</button>
+      <button class="screenshot-tab" onclick="showTab('transcript', this)">Call Transcript</button>
+      <button class="screenshot-tab" onclick="showTab('cadence', this)">Collection Cadence</button>
+    </div>
+    <div class="screenshot-panel active" id="tab-dashboard">
+      <div class="screenshot-frame"><img src="collect-screen-dashboard.png" alt="Canick Collect delinquency account dashboard"></div>
+      <div class="screenshot-caption">→ Account Dashboard — full delinquency queue with days past due, balance, last contact, and next action</div>
+    </div>
+    <div class="screenshot-panel" id="tab-transcript">
+      <div class="screenshot-frame"><img src="collect-screen-transcript.png" alt="Canick Collect call transcript with AI summary"></div>
+      <div class="screenshot-caption">→ Call Transcript — full conversation log, AI summary, and promise-to-pay tracking</div>
+    </div>
+    <div class="screenshot-panel" id="tab-cadence">
+      <div class="screenshot-frame"><img src="collect-screen-cadence.png" alt="Canick Collect collection cadence and compliance engine"></div>
+      <div class="screenshot-caption">→ Collection Cadence — automated Day 1–30 sequence with full compliance guardrails</div>
+    </div>
+  </div>
+</div>
+
+<!-- CADENCE -->
+<div class="cadence-section" id="how-it-works">
+  <div class="cadence-inner">
+    <div class="section-eyebrow reveal">The Collection Cadence</div>
+    <h2 class="section-h2 reveal">Proven cadence.<br><em>Automated execution.</em></h2>
+    <p class="section-sub reveal">Upload your delinquent accounts. Collect handles the rest — escalating tone and urgency as accounts age, handing off cleanly at the lien threshold.</p>
+    <div class="cadence-steps">
+      <div class="cadence-step reveal">
+        <div class="cadence-marker active">DAY<br>1</div>
+        <div class="cadence-content">
+          <h3>Friendly Payment Reminder</h3>
+          <p>A warm, professional call letting the tenant know their balance is past due and offering to help them get current. Payment link sent via SMS during the call.</p>
+          <div class="cadence-tags"><span class="cadence-tag">AI Voice Call</span><span class="cadence-tag">SMS Payment Link</span></div>
+        </div>
+      </div>
+      <div class="cadence-step reveal">
+        <div class="cadence-marker active">DAY<br>5</div>
+        <div class="cadence-content">
+          <h3>Second Reminder + Late Fee Notice</h3>
+          <p>Follow-up call mentioning that late fees will apply per the rental agreement. Tone remains helpful and solution-oriented.</p>
+          <div class="cadence-tags"><span class="cadence-tag">AI Voice Call</span></div>
+        </div>
+      </div>
+      <div class="cadence-step reveal">
+        <div class="cadence-marker active">DAY<br>15</div>
+        <div class="cadence-content">
+          <h3>Firm Notice + Access Warning</h3>
+          <p>Clear communication that continued non-payment may result in restricted access to their unit. Urgency increases — tone shifts from helpful to firm.</p>
+          <div class="cadence-tags"><span class="cadence-tag">AI Voice Call</span><span class="cadence-tag">SMS</span></div>
+        </div>
+      </div>
+      <div class="cadence-step reveal">
+        <div class="cadence-marker active">DAY<br>30</div>
+        <div class="cadence-content">
+          <h3>Final Call Before Lien Process</h3>
+          <p>Last automated outreach before the account transitions to manual lien processing. Strong and direct — the tenant understands what comes next.</p>
+          <div class="cadence-tags"><span class="cadence-tag">AI Voice Call</span></div>
+        </div>
+      </div>
+      <div class="cadence-step reveal">
+        <div class="cadence-marker danger">DAY<br>60+</div>
+        <div class="cadence-content">
+          <h3>Lien Process — Manual Handoff</h3>
+          <p>AI calls stop. Account is flagged and handed off for formal lien proceedings. Verified mail notice is required by law — this is always a human step. Collect never crosses this line.</p>
+          <div class="cadence-tags"><span class="cadence-tag manual">Manager Notification</span><span class="cadence-tag manual">Human Process</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLIANCE -->
+<div class="compliance-section">
+  <div class="compliance-inner">
+    <div class="section-eyebrow reveal">Compliance</div>
+    <h2 class="section-h2 reveal">Built for compliance.<br><em>Not bolted on.</em></h2>
+    <p class="section-sub reveal">Every guardrail is embedded in the system. The AI physically cannot violate these rules — it's not dependent on operator behavior or manual oversight.</p>
+    <div class="compliance-grid">
+      <div class="compliance-card reveal">
+        <div class="compliance-check">✓</div>
+        <div class="compliance-title">Time Restrictions Enforced</div>
+        <p class="compliance-text">Calls only between 8 AM – 9 PM in the tenant's local time zone. No exceptions, no overrides.</p>
+      </div>
+      <div class="compliance-card reveal">
+        <div class="compliance-check">✓</div>
+        <div class="compliance-title">Frequency Caps</div>
+        <p class="compliance-text">Maximum 7 call attempts per account in any 7-day period, consistent with CFPB Regulation F.</p>
+      </div>
+      <div class="compliance-card reveal">
+        <div class="compliance-check">✓</div>
+        <div class="compliance-title">Identity Verified First</div>
+        <p class="compliance-text">The AI verifies the tenant's identity before discussing any account details. No third-party disclosure of debt information.</p>
+      </div>
+      <div class="compliance-card reveal">
+        <div class="compliance-check">✓</div>
+        <div class="compliance-title">Instant Dispute Freeze</div>
+        <p class="compliance-text">If a tenant disputes a charge, all automated calls stop immediately and the account escalates to a manager for human review.</p>
+      </div>
+      <div class="compliance-card reveal">
+        <div class="compliance-check">✓</div>
+        <div class="compliance-title">Complete Audit Trail</div>
+        <p class="compliance-text">Every call recorded, transcribed, and timestamped. Full documentation on every account if questions ever arise.</p>
+      </div>
+      <div class="compliance-card reveal">
+        <div class="compliance-check">✓</div>
+        <div class="compliance-title">Lien Law Boundary</div>
+        <p class="compliance-text">Collect tracks statutory deadlines and hands off cleanly at the lien threshold. The AI never crosses into formal legal notice territory.</p>
+      </div>
+    </div>
+    <div class="compliance-banner reveal">
+      <div class="compliance-banner-icon">⚖️</div>
+      <div>
+        <div class="compliance-banner-title">The AI knows its limits.</div>
+        <p class="compliance-banner-text">Collect handles friendly-to-firm recovery calls. Formal lien notices, verified mail, and legal proceedings are always human steps — as required by law. The system is designed so those lines are never crossed.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features-section">
+  <div class="features-inner">
+    <div class="section-eyebrow reveal">What It Does</div>
+    <h2 class="section-h2 reveal">Not a robocall.<br><em>A real conversation.</em></h2>
+    <p class="section-sub reveal">Tenants can ask questions, explain their situation, make payment commitments, and receive payment links — all in a single call handled entirely by AI.</p>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-num">01 — Outreach</span>
+        <span class="feature-icon">📞</span>
+        <h3 class="feature-title">Conversational AI Calls</h3>
+        <p class="feature-text">Unlike pre-recorded robocalls, Collect is a live two-way conversation. Tenants can ask questions about their balance, explain payment issues, request extensions, or make a payment commitment — and the AI responds intelligently.</p>
+        <div class="feature-tags"><span class="feature-tag">Two-Way Conversation</span><span class="feature-tag">Natural Language</span><span class="feature-tag">Real-Time Response</span></div>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-num">02 — Payment</span>
+        <span class="feature-icon">💳</span>
+        <h3 class="feature-title">SMS Payment Links During Calls</h3>
+        <p class="feature-text">When a tenant agrees to pay, Collect sends a payment link to their phone during the call. They can pay before they hang up. No logging in later, no forgetting — conversion happens in the moment.</p>
+        <div class="feature-tags"><span class="feature-tag">In-Call SMS</span><span class="feature-tag">Instant Payment</span><span class="feature-tag">Commitment Tracking</span></div>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-num">03 — Intelligence</span>
+        <span class="feature-icon">🧠</span>
+        <h3 class="feature-title">Outcome Classification</h3>
+        <p class="feature-text">Every call is automatically classified — Paid, Promise to Pay, Dispute, No Answer, Voicemail. The dashboard shows exactly where every account stands and what happens next. No manual logging.</p>
+        <div class="feature-tags"><span class="feature-tag">Auto-Classification</span><span class="feature-tag">Promise Tracking</span><span class="feature-tag">Dispute Flagging</span></div>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-num">04 — Reporting</span>
+        <span class="feature-icon">📊</span>
+        <h3 class="feature-title">Full Transcripts + AI Summaries</h3>
+        <p class="feature-text">Every call is recorded, transcribed, and summarized by AI. You see exactly what was said, what the tenant committed to, and what happens next — without listening to a single call.</p>
+        <div class="feature-tags"><span class="feature-tag">Full Transcripts</span><span class="feature-tag">AI Summaries</span><span class="feature-tag">Call Recording</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="section-eyebrow reveal" style="justify-content:center;">Pricing</div>
+    <h2 class="section-h2 reveal" style="text-align:center;">Flat pricing.<br><em>You keep every dollar.</em></h2>
+    <div class="pricing-card reveal">
+      <div>
+        <div class="price-label">One-Time Setup</div>
+        <div class="price-amount">$499</div>
+        <div class="price-note">Full build, training & deployment</div>
+        <div class="price-divider"></div>
+        <div class="price-label">Monthly</div>
+        <div class="price-amount">$149<span style="font-size:24px;color:var(--mid);font-weight:400;">/mo</span></div>
+        <div class="price-note">Per location · unlimited accounts</div>
+        <div class="price-divider"></div>
+        <div class="price-includes-title">Everything Included</div>
+        <div class="price-feature">Automated Day 1–30 collection cadence</div>
+        <div class="price-feature">Conversational AI — tenants can ask questions</div>
+        <div class="price-feature">SMS payment links sent during calls</div>
+        <div class="price-feature">Full compliance engine — time, frequency, identity</div>
+        <div class="price-feature">Complete call recording & transcription</div>
+        <div class="price-feature">Outcome classification & promise tracking</div>
+        <div class="price-feature">Manager alerts for disputes & lien handoffs</div>
+      </div>
+      <div>
+        <h3 class="price-right-title">No percentage cut.<br><em>Ever.</em></h3>
+        <p class="price-right-text">Collection agencies charge 25–50% of every dollar they recover. On a portfolio with $10,000 in delinquent balances, that's $2,500–$5,000 off the top. Collect charges a flat $149/month — regardless of how much you recover.</p>
+        <p class="price-right-text">Most operators recover the setup fee in the first month. After that it's pure margin.</p>
+        <a href="mailto:jim@canick.co" class="btn-primary" style="margin-top:8px;">Get Started Today</a>
+        <div style="margin-top:16px;font-size:12px;color:var(--mid);font-family:'Space Mono',monospace;letter-spacing:0.5px;">Or call Jim: (406) 606-6088</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="section-eyebrow reveal">Ready?</div>
+    <h2 class="cta-h2 reveal">Stop leaving money<br><em>in delinquent accounts.</em></h2>
+    <p class="cta-sub reveal">Setup takes less than a week. Collect is live and recovering revenue for storage operators now. Every day without it is money you're not getting back.</p>
+    <div class="cta-actions reveal">
+      <a href="mailto:jim@canick.co" class="btn-primary">Get Canick Collect™ — $499 Setup</a>
+      <a href="tel:4066066088" class="btn-secondary">Call Jim: (406) 606-6088</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Canick</div>
+  <div class="footer-center">
+    <div class="footer-text">© 2026 Canick, LLC · Billings, Montana · AI Consulting & Integration</div>
+    <div class="footer-legal">
+      <a href="/canick-privacy-policy-april26.pdf">Privacy Policy</a>
+      <span>·</span>
+      <a href="/canick-terms-and-conditions-april26.pdf">Terms & Conditions</a>
+    </div>
+  </div>
+  <div class="footer-text" style="color:var(--copper);">canick.co/collect</div>
+</footer>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.screenshot-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.screenshot-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.style.transitionDelay = `${(i % 4) * 0.08}s`;
+  observer.observe(el);
+});
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.borderBottomColor = window.scrollY > 50 ? 'rgba(160,113,79,0.4)' : 'rgba(160,113,79,0.25)';
+});
+</script>
+</body>
+</html>
